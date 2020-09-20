@@ -14,13 +14,14 @@
 
 class MotorPositionInitiator: public MotorStateHandlerImpl { // @suppress("Class has a virtual method and non-virtual destructor")
 public:
-	MotorPositionInitiator(  MotorStateHandler* _handler, MotorDriver* _driver, OptoBreaker* _breaker );
+	MotorPositionInitiator(  MotorStateHandler* _handler, MotorDriver* _driver, OptoBreaker* _breaker, const int _ID );
 	virtual void run(unsigned long int now);
 	virtual void init() {}
 private:
 	enum State { NEW, MOVING, DONE };
 	State state;
 	OptoBreaker* breaker;
+	const int ID;
 };
 
 #endif /* MOTORPOSITIONINITIATOR_H_ */

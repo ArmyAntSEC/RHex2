@@ -13,17 +13,18 @@
 
 class MotorStateHandler: public RecurringTask { // @suppress("Class has a virtual method and non-virtual destructor")
 public:
-	MotorStateHandler(unsigned long int rate);
+	MotorStateHandler(unsigned long int rate, const int _ID);
 	virtual void run(unsigned long int now);
 	void startInitiator();
 	void startMainLoop();
 	void setInitiator(MotorStateHandlerImpl* initiator);
 	void setMainLoop(MotorStateHandlerImpl* mainLoop);
 
-private:
+private:		
 	MotorStateHandlerImpl* initiator;
 	MotorStateHandlerImpl* mainLoop;
 	MotorStateHandlerImpl* currentState;
+	const int ID;
 };
 
 #endif /* MOTORSTATEHANDLER_H_ */

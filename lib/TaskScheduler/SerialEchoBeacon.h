@@ -14,8 +14,11 @@ class SerialEchoBeacon: public RecurringTask { // @suppress("Class has a virtual
 
 public:
     // Create a new blinker for the specified pin and rate.
-	SerialEchoBeacon(unsigned long int _rate);
+	SerialEchoBeacon(unsigned long int _rate, const int _ID) ;
     virtual void run(unsigned long int now);
+
+    private:
+        const int ID;
 };
 
 #endif /* SERIALECHOBEACON_H_ */

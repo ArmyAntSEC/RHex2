@@ -6,10 +6,11 @@
  */
 
 #include "MotorStateHandler.h"
-#include "Arduino.h"
+#include <Arduino.h>
+#include <Streaming.h>
 
-MotorStateHandler::MotorStateHandler( unsigned long int rate ):
-				RecurringTask(rate), initiator(0), mainLoop(0), currentState(0)
+MotorStateHandler::MotorStateHandler( unsigned long int rate, const int _ID ):
+	RecurringTask(rate), initiator(0), mainLoop(0), currentState(0), ID(_ID)
 {
 }
 
@@ -34,6 +35,7 @@ void MotorStateHandler::setMainLoop(MotorStateHandlerImpl* mainLoop) {
 void MotorStateHandler::run(unsigned long int now) {
 	RecurringTask::run(now);
 	if ( currentState != 0 ) {
+		//Serial << "State handler " << this->ID << ": Running" << endl;
 		currentState->run(now);
 	}
 

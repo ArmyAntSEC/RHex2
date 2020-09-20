@@ -14,7 +14,7 @@
 
 class MotorPIDRegulator: public MotorStateHandlerImpl { // @suppress("Class has a virtual method and non-virtual destructor")
 public:
-	MotorPIDRegulator(MotorStateHandler* _handler, MotorDriver* _driver, Encoder* _encoder, PID* _pid );
+	MotorPIDRegulator(MotorStateHandler* _handler, MotorDriver* _driver, Encoder* _encoder, PID* _pid, int _ID );
 	virtual void run(unsigned long int now);
 	virtual void init();
 	void setWantedPositionRev( float _setPointRev );
@@ -23,6 +23,7 @@ private:
 	Encoder* encoder;
 	PID* pid;
 	double setPointRev;
+	int ID;
 };
 
 #endif /* MOTORPIDREGULATOR_H_ */

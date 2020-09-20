@@ -7,12 +7,13 @@
 
 #include "SerialEchoBeacon.h"
 #include <Arduino.h>
+#include <Streaming.h>
 
-SerialEchoBeacon::SerialEchoBeacon(unsigned long int _rate)
-: RecurringTask(_rate)
+SerialEchoBeacon::SerialEchoBeacon(unsigned long int _rate, const int _ID)
+: RecurringTask(_rate), ID(_ID)
 {}
 
 void SerialEchoBeacon::run(unsigned long int now) {
 	RecurringTask::run(now);
-	Serial.println("Beacon ping....");
+	Serial << "Beacon " << this->ID << ": ping...." << endl;
 }

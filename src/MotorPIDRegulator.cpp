@@ -6,24 +6,24 @@
  */
 
 #include "MotorPIDRegulator.h"
-#include "Arduino.h"
+#include <Arduino.h>
+#include <Streaming.h>
 
-MotorPIDRegulator::MotorPIDRegulator ( MotorStateHandler* _handler, MotorDriver* _driver, Encoder* _encoder, PID* _pid ):
-	MotorStateHandlerImpl(_handler, _driver), encoder(_encoder), pid(_pid), setPointRev(0)
+#define LOG Serial << "Regulator" << this->ID  << ": "
+
+MotorPIDRegulator::MotorPIDRegulator ( MotorStateHandler* _handler, MotorDriver* _driver, Encoder* _encoder, PID* _pid, int _ID ):
+	MotorStateHandlerImpl(_handler, _driver), encoder(_encoder), pid(_pid), setPointRev(0), ID(_ID)
 {
 }
 
-void MotorPIDRegulator::init() {
-	Serial.println( "Regulator: Reseting the encoder." );
+void MotorPIDRegulator::init() {	
+	LOG << "Reseting the encoder." << endl;
 	//Make sure encoder things we are at position 0.
-	long int pos = this->encoder->read();
+	long int oldPos = this->encoder->read();
 	this->encoder->write(0);
+	long int newPos = this->encoder->read();
 	
-	Serial.print( "Old position: " );
-	Serial.print ( pos );
-	pos = this->encoder->read();
-	Serial.print( " New position: " );
-	Serial.println ( pos );
+	LOG << "Old position: " << oldPos << " New pos: " << newPos << endl;	
 }
 
 void MotorPIDRegulator::setWantedPositionRev( float _setPointRev) {
@@ -39,13 +39,7 @@ void MotorPIDRegulator::run(unsigned long int) {
 	double PwmValue = this->pid->Compute(currentPositionRev, this->setPointRev );
 
 	this->driver->setMotorPWM((int)PwmValue);
-	Serial.print ("Regulator: Step: " );
-	Serial.print ( currentPositionClicks );
-	Serial.print ( ", " );
-	Serial.print ( currentPositionRev );
-	Serial.print ( ", " );
-	Serial.print ( this->setPointRev );
-	Serial.print ( ", " );
-	Serial.println ( PwmValue );
-
+	LOG << "Step: " << currentPositionClicks << 
+		", " << currentPositionRev << ", " << this->setPointRev << ", " <<
+		", " << PwmValue << endl;	
 }
