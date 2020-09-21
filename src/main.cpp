@@ -45,7 +45,7 @@ Encoder encoderRight( ENCODER_RIGHT_PIN_1, ENCODER_RIGHT_PIN_2 );
 double Kp = 1000;
 double Ki = 0;
 double Kd = 0;
-int sampleTime = 200;
+int sampleTime = 200 ;
 PID pidLeft(Kp, Ki, Kd, sampleTime, P_ON_E, REVERSE );
 PID pidRight(Kp, Ki, Kd, sampleTime, P_ON_E, REVERSE );
 
@@ -102,7 +102,7 @@ unsigned long int loops = 0;
 bool done = false;
 void loop() {
 	while ( done == false ) {
-		if ( loops++ < 2e6 ) {
+		if ( loops++ < 1e6 ) {
 			sched.run();
 		} else {
 			done = true;
@@ -113,32 +113,3 @@ void loop() {
 		}
 	}
 }
-
-/*
- * double MotorScheduler::interp1(int xlen, double x[], double y[], double xq) {
-	//Note: X must be strictly monotonically increasing.<
-
-	//Check that we are in range
-	if ( xq < x[0] || xq > x[xlen-1] ) {
-		return 1.0/0.0;
-	}
-
-	//Now find what segment we are in
-	int segment = 0;
-	while ( xq > x[segment+1] ) { segment++; }
-
-	//Compute the start ane endpoints of the current segment.
-	double x0 = x[segment];
-	double x1 = x[segment+1];
-	double y0 = y[segment];
-	double y1 = y[segment+1];
-
-	//Compute the relative position within the segment in x
-	double xt = (xq - x0)/(x1-x0);
-
-	//Compute the Y postion to return
-	double yRet = y0 + (y1-y0)*xt;
-
-	return yRet;
-}
- */
