@@ -7,9 +7,8 @@
 
 #include "MotorPIDRegulator.h"
 #include <Arduino.h>
-#include <Streaming.h>
-
-#define LOG Serial << "Regulator" << this->ID  << ": "
+#include <LogStorage.h>
+#define LOG Log << "Regulator " << this->ID << ": "
 
 MotorPIDRegulator::MotorPIDRegulator ( MotorStateHandler* _handler, MotorDriver* _driver, Encoder* _encoder, PID* _pid, int _ID ):
 	MotorStateHandlerImpl(_handler, _driver), encoder(_encoder), pid(_pid), setPointRev(0), ID(_ID)

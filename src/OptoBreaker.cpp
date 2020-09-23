@@ -7,9 +7,11 @@
 
 #include "OptoBreaker.h"
 #include <Arduino.h>
+
 OptoBreaker::OptoBreaker(int _pin):
-pin(_pin)
-{}
+	pin(_pin)
+{
+}
 
 bool OptoBreaker::read() {
 	int value = analogRead(pin);

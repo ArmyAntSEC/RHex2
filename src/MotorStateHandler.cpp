@@ -7,7 +7,7 @@
 
 #include "MotorStateHandler.h"
 #include <Arduino.h>
-#include <Streaming.h>
+
 
 MotorStateHandler::MotorStateHandler( unsigned long int rate, const int _ID ):
 	RecurringTask(rate), initiator(0), mainLoop(0), currentState(0), ID(_ID)

@@ -7,6 +7,9 @@
 
 #include "MotorSinWaver.h"
 #include <Arduino.h>
+#include <LogStorage.h>
+#define LOG Log << "Waver " << ": "
+
 
 MotorSinWaver::MotorSinWaver(MotorStateHandler* _handler, MotorDriver* _driver ):
 		MotorStateHandlerImpl( _handler, _driver ), startTime(0)
@@ -15,7 +18,7 @@ MotorSinWaver::MotorSinWaver(MotorStateHandler* _handler, MotorDriver* _driver )
 
 void MotorSinWaver::run(unsigned long int now) {
 	if ( startTime == 0 ) {
-		Serial.println ( "MotorSinWaver: Called for the first time.");
+		LOG << "Called for the first time." << endl;
 		startTime = now;
 	}
 

@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <Streaming.h>
 #include <math.h>
 #include <TaskScheduler.h>
 #include <SerialEchoBeacon.h>
@@ -14,6 +13,10 @@
 #include "MotorStateHandler.h"
 #include "MotorSinWaver.h"
 #include "MotorPIDRegulator.h"
+
+#include <LogStorage.h>
+#define LOG Log << "Main: "
+
 
 
 #define ENCODER_LEFT_PIN_1 2
@@ -65,7 +68,7 @@ void setup() {
   	
 	//Initilaize the communication.
 	Serial.begin(9600);
-	Serial << "\n\n\n\n" << "Hello World again!" << endl;
+	Log << "\n\n\n\n" << "Hello World again!" << endl;
 
   
 	stateHandlerLeft.setInitiator(&initiatorLeft);
@@ -106,8 +109,10 @@ void loop() {
 			sched.run();
 		} else {
 			done = true;
-			unsigned long int totalTime = millis();
-			Serial << "Done with " << loops << " loops in " << totalTime << " ms for a rate of " << (int)floor(loops / (float)totalTime) << " loops/ms";
+			unsigned long int totalTime = millis();			
+			LOG << "Done with " << loops << " loops in " << totalTime << " ms for a rate of " << (int)floor(loops / (float)totalTime) << " loops/ms" << endl;			
+			Log.sendToSerial();
+
 			driverLeft.setMotorPWM(0);
 			driverRight.setMotorPWM(0);
 		}
