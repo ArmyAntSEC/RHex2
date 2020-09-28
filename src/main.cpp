@@ -17,8 +17,6 @@
 #include <LogStorage.h>
 #define LOG Log << "Main: "
 
-
-
 #define ENCODER_LEFT_PIN_1 2
 #define ENCODER_LEFT_PIN_2 3
 #define BREAKER_LEFT_PIN A0
@@ -39,11 +37,11 @@ SerialEchoBeacon beacon_01(1000, 1);
 
 TaskScheduler sched = TaskScheduler();
 
-OptoBreaker breakerLeft( BREAKER_LEFT_PIN );
-Encoder encoderLeft( ENCODER_LEFT_PIN_1, ENCODER_LEFT_PIN_2 );
+OptoBreaker breakerLeft( BREAKER_LEFT_PIN,  );
+Encoder encoderLeft( ENCODER_LEFT_PIN_1, ENCODER_LEFT_PIN_2, BREAKER_LEFT_PIN );
 
 OptoBreaker breakerRight( BREAKER_RIGHT_PIN );
-Encoder encoderRight( ENCODER_RIGHT_PIN_1, ENCODER_RIGHT_PIN_2 );
+Encoder encoderRight( ENCODER_RIGHT_PIN_1, ENCODER_RIGHT_PIN_2, BREAKER_RIGHT_PIN );
 
 double Kp = 1000;
 double Ki = 0;
