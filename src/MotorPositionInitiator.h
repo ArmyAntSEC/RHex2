@@ -10,18 +10,22 @@
 
 #include "MotorStateHandlerImpl.h"
 #include "MotorDriver.h"
-#include "OptoBreaker.h"
+#include "Encoder.h"
+#include "LegConfig.h"
+#include "MotorPIDRegulator.h"
 
 class MotorPositionInitiator: public MotorStateHandlerImpl { // @suppress("Class has a virtual method and non-virtual destructor")
 public:
-	MotorPositionInitiator(  MotorStateHandler* _handler, MotorDriver* _driver, OptoBreaker* _breaker, const int _ID );
+	MotorPositionInitiator (  MotorStateHandler* const _handler, MotorDriver* const _driver, 
+		EncoderWrapper * const _encoder, MotorPIDRegulator * const _pid, LegConfig const * const _conf );
 	virtual void run(unsigned long int now);
 	virtual void init() {}
 private:
-	enum State { NEW, MOVING, DONE };
+	enum State { NEW, MOVING, ALIGNING, DONE };
 	State state;
-	OptoBreaker* breaker;
-	const int ID;
+	Encoder * const encoder;
+	MotorPIDRegulator * const pid;
+	LegConfig const * const conf;
 };
 
 #endif /* MOTORPOSITIONINITIATOR_H_ */

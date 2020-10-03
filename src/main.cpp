@@ -3,7 +3,7 @@
 #include <TaskScheduler.h>
 #include <SerialEchoBeacon.h>
 
-#include <Encoder.h>
+#include "EncoderWrapper.h"
 #include <PID.h>
 
 #include "MotorDriver.h"
@@ -20,10 +20,12 @@
 #define ENCODER_LEFT_PIN_1 2
 #define ENCODER_LEFT_PIN_2 3
 #define BREAKER_LEFT_PIN A0
+#define LEFT_LEG_ZERO_POSITION 0
 
 #define ENCODER_RIGHT_PIN_1 10
 #define ENCODER_RIGHT_PIN_2 11
 #define BREAKER_RIGHT_PIN A1
+#define RIGHT_LEG_ZERO_POSITION 0
 
 #define DRIVER_LEFT_PIN_1 4
 #define DRIVER_LEFT_PIN_2 5
@@ -33,15 +35,18 @@
 #define DRIVER_RIGHT_PIN_2 7
 #define DRIVER_RIGHT_PIN_PWM 9
 
+LegConfig leftConfig( 1, ENCODER_LEFT_PIN_1, ENCODER_LEFT_PIN_2, BREAKER_LEFT_PIN, 
+	DRIVER_LEFT_PIN_1, DRIVER_LEFT_PIN_2, DRIVER_LEFT_PIN_PWM, 0.0 );
+
+LegConfig rightConfig( 2, ENCODER_RIGHT_PIN_1, ENCODER_RIGHT_PIN_2, BREAKER_RIGHT_PIN, 
+	DRIVER_RIGHT_PIN_1, DRIVER_RIGHT_PIN_2, DRIVER_RIGHT_PIN_PWM, 0.0 );
+
 SerialEchoBeacon beacon_01(1000, 1);
 
 TaskScheduler sched = TaskScheduler();
 
-OptoBreaker breakerLeft( BREAKER_LEFT_PIN,  );
-Encoder encoderLeft( ENCODER_LEFT_PIN_1, ENCODER_LEFT_PIN_2, BREAKER_LEFT_PIN );
-
-OptoBreaker breakerRight( BREAKER_RIGHT_PIN );
-Encoder encoderRight( ENCODER_RIGHT_PIN_1, ENCODER_RIGHT_PIN_2, BREAKER_RIGHT_PIN );
+EncoderWrapper encoderLeft( &leftConfig );
+EncoderWrapper encoderRight( &rightConfig );
 
 double Kp = 1000;
 double Ki = 0;
@@ -56,26 +61,29 @@ MotorStateHandler stateHandlerRight ( sampleTime, 2 );
 MotorDriver driverLeft(DRIVER_LEFT_PIN_1, DRIVER_LEFT_PIN_2, DRIVER_LEFT_PIN_PWM );
 MotorDriver driverRight(DRIVER_RIGHT_PIN_1, DRIVER_RIGHT_PIN_2, DRIVER_RIGHT_PIN_PWM );
 
-MotorPositionInitiator initiatorLeft(  &stateHandlerLeft, &driverLeft, &breakerLeft, 1 );
-MotorPositionInitiator initiatorRight(  &stateHandlerRight, &driverRight, &breakerRight, 2 );
+MotorPIDRegulator regulatorLeft( &driverLeft, &encoderLeft, &pidLeft, 1 );
+MotorPIDRegulator regulatorRight( &driverRight, &encoderRight, &pidRight, 2 );
 
-MotorPIDRegulator regulatorLeft( &stateHandlerLeft, &driverLeft, &encoderLeft, &pidLeft, 1 );
-MotorPIDRegulator regulatorRight( &stateHandlerRight, &driverRight, &encoderRight, &pidRight, 2 );
+MotorPositionInitiator initiatorLeft(  &stateHandlerLeft, &driverLeft, 
+	&encoderLeft, &regulatorLeft, &leftConfig );
+MotorPositionInitiator initiatorRight(  &stateHandlerRight, &driverRight, 
+	&encoderRight, &regulatorLeft, &rightConfig );
+
 
 void setup() {
   	
+	unsigned long int now = millis();
+
 	//Initilaize the communication.
 	Serial.begin(9600);
 	Log << "\n\n\n\n" << "Hello World again!" << endl;
 
   
 	stateHandlerLeft.setInitiator(&initiatorLeft);
-	stateHandlerLeft.setMainLoop(&regulatorLeft);
 	stateHandlerLeft.startInitiator();
 	stateHandlerLeft.init(millis());
 	
 	stateHandlerRight.setInitiator(&initiatorRight);
-	stateHandlerRight.setMainLoop(&regulatorRight);
 	stateHandlerRight.startInitiator();
 	stateHandlerRight.init(millis());
 
@@ -95,8 +103,8 @@ void setup() {
   	driverLeft.setMotorPWM(0);
 	driverRight.setMotorPWM(0);
 
-	regulatorLeft.setWantedPositionRev(-1.4);  
-	regulatorRight.setWantedPositionRev(-1.4);  
+	regulatorLeft.setWantedPositionRev(-1.4, now);  
+	regulatorRight.setWantedPositionRev(-1.4, now);  
 }
 
 unsigned long int loops = 0;

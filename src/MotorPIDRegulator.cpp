@@ -10,8 +10,8 @@
 #include <LogStorage.h>
 #define LOG Log << "Regulator " << this->ID << ": "
 
-MotorPIDRegulator::MotorPIDRegulator ( MotorStateHandler* _handler, MotorDriver* _driver, Encoder* _encoder, PID* _pid, int _ID ):
-	MotorStateHandlerImpl(_handler, _driver), encoder(_encoder), pid(_pid), setPointRev(0), ID(_ID)
+MotorPIDRegulator::MotorPIDRegulator ( MotorDriver* _driver, EncoderWrapper* _encoder, PID* _pid, int _ID ):
+	driver(_driver), encoder(_encoder), pid(_pid), setPointRev(0), ID(_ID)
 {
 }
 
@@ -25,8 +25,14 @@ void MotorPIDRegulator::init() {
 	LOG << "Old position: " << oldPos << " New pos: " << newPos << endl;	
 }
 
-void MotorPIDRegulator::setWantedPositionRev( float _setPointRev) {
+void MotorPIDRegulator::setWantedPositionRev( float _setPointRev, unsigned long int now ) {
 	this->setPointRev = _setPointRev;
+	this->lastChangeSetpointTime = now;
+}
+
+boolean MotorPIDRegulator::hasSettled( unsigned long int now)
+{
+	return now - this->lastChangeSetpointTime > 5000;
 }
 
 void MotorPIDRegulator::run(unsigned long int) {
