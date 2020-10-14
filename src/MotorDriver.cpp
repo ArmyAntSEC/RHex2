@@ -15,6 +15,7 @@ driverPinOne(_driverPinOne), driverPinTwo(_driverPinTwo), driverPinPWM(_driverPi
 void MotorDriver::init() {
 	pinMode(this->driverPinOne, OUTPUT);
 	pinMode(this->driverPinTwo, OUTPUT);
+	pinMode(this->driverPinPWM, OUTPUT);
 	this->setMotorPWM(0);
 }
 
