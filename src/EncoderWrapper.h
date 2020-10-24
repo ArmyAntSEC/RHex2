@@ -1,14 +1,15 @@
 #ifndef _ENCODERWRAPPER_H_
 #define _ENCODERWRAPPER_H_
 
-#include <Encoder.h>
+#include <HomingEncoder.h>
 #include "legConfig.h"
 
-class EncoderWrapper : public Encoder
+class EncoderWrapper : public HomingEncoder
 {
     public:
-    EncoderWrapper ( LegConfig * conf ):
-        Encoder( conf->encoderPin1, conf->encoderPin2, conf->breakerPin )
-    {}
+    template <int N> void init( LegConfig * conf )        
+    {
+        HomingEncoder::init<N>( conf->encoderPin1, conf->encoderPin2, conf->breakerPin );
+    }
 };
 #endif
