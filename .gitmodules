@@ -1,3 +1,6 @@
 [submodule "Streaming"]
 	path = lib/Streaming
 	url = https://github.com/ArmyAntSEC/Arduino_Streaming_Print.git
+[submodule "lib/HomingEncoderDue"]
+	path = lib/HomingEncoderDue
+	url = https://github.com/ArmyAntSEC/HomingEncoderDue.git
