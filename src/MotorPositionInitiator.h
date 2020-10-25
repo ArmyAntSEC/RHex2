@@ -10,22 +10,21 @@
 
 #include "MotorStateHandlerImpl.h"
 #include "MotorDriver.h"
-#include "Encoder.h"
-#include "LegConfig.h"
+#include "HomingEncoder.h"
 #include "MotorPIDRegulator.h"
 
 class MotorPositionInitiator: public MotorStateHandlerImpl { // @suppress("Class has a virtual method and non-virtual destructor")
 public:
 	MotorPositionInitiator (  MotorStateHandler* const _handler, MotorDriver* const _driver, 
-		EncoderWrapper * const _encoder, MotorPIDRegulator * const _pid, LegConfig const * const _conf );
+		HomingEncoder * const _encoder, MotorPIDRegulator * const _pid, const int _ID );
 	virtual void run(unsigned long int now);
 	virtual void init() {}
 private:
 	enum State { NEW, MOVING, ALIGNING, DONE };
 	State state;
-	Encoder * const encoder;
+	HomingEncoder * const encoder;
 	MotorPIDRegulator * const pid;
-	LegConfig const * const conf;
+	const int ID;
 };
 
 #endif /* MOTORPOSITIONINITIATOR_H_ */

@@ -3,51 +3,26 @@
 #include <TaskScheduler.h>
 #include <SerialEchoBeacon.h>
 
-#include "EncoderWrapper.h"
-#include <PID.h>
-
-#include "MotorDriver.h"
-
-#include "OptoBreaker.h"
-#include "MotorPositionInitiator.h"
-#include "MotorStateHandler.h"
-#include "MotorSinWaver.h"
-#include "MotorPIDRegulator.h"
+#include "LeftForwardLeg.h"
 
 #include <LogStorage.h>
 #define LOG Log << "Main: "
-
-#define ENCODER_LEFT_PIN_1 2
-#define ENCODER_LEFT_PIN_2 3
-#define BREAKER_LEFT_PIN A0
-#define LEFT_LEG_ZERO_POSITION 0
 
 #define ENCODER_RIGHT_PIN_1 10
 #define ENCODER_RIGHT_PIN_2 11
 #define BREAKER_RIGHT_PIN A1
 #define RIGHT_LEG_ZERO_POSITION 0
 
-#define DRIVER_LEFT_PIN_1 4
-#define DRIVER_LEFT_PIN_2 5
-#define DRIVER_LEFT_PIN_PWM 6
-
 #define DRIVER_RIGHT_PIN_1 8
 #define DRIVER_RIGHT_PIN_2 7
 #define DRIVER_RIGHT_PIN_PWM 9
-
-LegConfig leftConfig( 1, ENCODER_LEFT_PIN_1, ENCODER_LEFT_PIN_2, BREAKER_LEFT_PIN, 
-	DRIVER_LEFT_PIN_1, DRIVER_LEFT_PIN_2, DRIVER_LEFT_PIN_PWM, 0.0 );
-
-LegConfig rightConfig( 2, ENCODER_RIGHT_PIN_1, ENCODER_RIGHT_PIN_2, BREAKER_RIGHT_PIN, 
-	DRIVER_RIGHT_PIN_1, DRIVER_RIGHT_PIN_2, DRIVER_RIGHT_PIN_PWM, 0.0 );
 
 SerialEchoBeacon beacon_01(1000, 1);
 
 TaskScheduler sched = TaskScheduler();
 
-EncoderWrapper encoderLeft( &leftConfig );
-EncoderWrapper encoderRight( &rightConfig );
 
+/*
 double Kp = 1000;
 double Ki = 0;
 double Kd = 0;
@@ -68,7 +43,7 @@ MotorPositionInitiator initiatorLeft(  &stateHandlerLeft, &driverLeft,
 	&encoderLeft, &regulatorLeft, &leftConfig );
 MotorPositionInitiator initiatorRight(  &stateHandlerRight, &driverRight, 
 	&encoderRight, &regulatorLeft, &rightConfig );
-
+*/
 
 void setup() {
   	
@@ -78,7 +53,10 @@ void setup() {
 	Serial.begin(9600);
 	Log << "\n\n\n\n" << "Hello World again!" << endl;
 
-  
+	//TODO: Start here
+	//initLeftForwardLeg(); //Make sure we have a left leg fully configured
+
+	/*
 	stateHandlerLeft.setInitiator(&initiatorLeft);
 	stateHandlerLeft.startInitiator();
 	stateHandlerLeft.init(millis());
@@ -105,6 +83,7 @@ void setup() {
 
 	regulatorLeft.setWantedPositionRev(-1.4, now);  
 	regulatorRight.setWantedPositionRev(-1.4, now);  
+	*/
 }
 
 unsigned long int loops = 0;
@@ -118,9 +97,10 @@ void loop() {
 			unsigned long int totalTime = millis();			
 			LOG << "Done with " << loops << " loops in " << totalTime << " ms for a rate of " << (int)floor(loops / (float)totalTime) << " loops/ms" << endl;			
 			Log.sendToSerial();
-
+			/*
 			driverLeft.setMotorPWM(0);
 			driverRight.setMotorPWM(0);
+			*/
 		}
 	}
 }

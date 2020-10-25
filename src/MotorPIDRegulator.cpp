@@ -10,19 +10,13 @@
 #include <LogStorage.h>
 #define LOG Log << "Regulator " << this->ID << ": "
 
-MotorPIDRegulator::MotorPIDRegulator ( MotorDriver* _driver, EncoderWrapper* _encoder, PID* _pid, int _ID ):
+MotorPIDRegulator::MotorPIDRegulator ( MotorDriver* _driver, HomingEncoder * _encoder, PID* _pid, int _ID ):
 	driver(_driver), encoder(_encoder), pid(_pid), setPointRev(0), ID(_ID)
 {
 }
 
 void MotorPIDRegulator::init() {	
-	LOG << "Reseting the encoder." << endl;
-	//Make sure encoder things we are at position 0.
-	long int oldPos = this->encoder->read();
-	this->encoder->write(0);
-	long int newPos = this->encoder->read();
-	
-	LOG << "Old position: " << oldPos << " New pos: " << newPos << endl;	
+	//Nothing to do here
 }
 
 void MotorPIDRegulator::setWantedPositionRev( float _setPointRev, unsigned long int now ) {

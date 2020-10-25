@@ -8,13 +8,13 @@
 #include "MotorPositionInitiator.h"
 #include <Arduino.h>
 #include <LogStorage.h>
-#define LOG Log << "Initiator" << this->conf->ID << ": "
+#define LOG Log << "Initiator" << this->ID << ": "
 
 
 MotorPositionInitiator::MotorPositionInitiator(  MotorStateHandler* const _handler, MotorDriver* const _driver, 
-		EncoderWrapper * const _encoder, MotorPIDRegulator * const _pid, LegConfig const * const _conf ):
+		HomingEncoder * const _encoder, MotorPIDRegulator * const _pid, const int _ID ):
 	MotorStateHandlerImpl(_handler, _driver ), state(NEW), encoder(_encoder), 
-	pid(_pid), conf(_conf)
+	pid(_pid), ID(_ID)
 {}
 
 void MotorPositionInitiator::run ( unsigned long int now ) {
@@ -30,8 +30,7 @@ void MotorPositionInitiator::run ( unsigned long int now ) {
 		if ( encoder->isHomed() ) {
 			driver->setMotorPWM(0);
 			state = ALIGNING;
-			LOG << "Edge found. Changing state to ALIGNING.  Moving to configured 0 position" << endl;			
-			pid->setWantedPositionRev( this->conf->zeroPositionFromBreaker, now );
+			LOG << "Edge found. Changing state to ALIGNING." << endl;						
 		}
 		break;
 	case ALIGNING:		

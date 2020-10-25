@@ -9,12 +9,12 @@
 #define MOTORPIDREGULATOR_H_
 
 #include "PID.h"
-#include "EncoderWrapper.h"
 #include "MotorDriver.h"
+#include <HomingEncoder.h>
 
 class MotorPIDRegulator {
 public:
-	MotorPIDRegulator( MotorDriver* _driver, EncoderWrapper * _encoder, PID* _pid, int _ID );
+	MotorPIDRegulator( MotorDriver* _driver, HomingEncoder * _encoder, PID* _pid, int _ID );
 	virtual void run(unsigned long int now);
 	virtual void init();
 	void setWantedPositionRev( float _setPointRev, unsigned long int now );
@@ -22,7 +22,7 @@ public:
 private:
 	double angleDifference( double angle1, double angle2 );
 	MotorDriver * driver;
-	EncoderWrapper * encoder;
+	HomingEncoder * encoder;
 	PID * pid;
 	double setPointRev;
 	int ID;
