@@ -1,8 +1,14 @@
 #ifndef _LEGPROCESSOR_H_
 #define _LEGPROCESSOR_H_
 
+#include <pwm_lib.h>
+using namespace arduino_due::pwm_lib;
+
 #include <HomingEncoder.h>
 #include "MotorDriver.h"
+#include "MotorPositionInitiator.h"
+
+ 
 
 class LegProcessor
 {
@@ -14,13 +20,14 @@ class LegProcessor
 
         int driverPin1;
         int driverPin2;
-        int driverPWM;
+        pwm_base * driverPWM;
 
     public:
         HomingEncoder encoder;
         MotorDriver driver;
+        MotorPositionInitiator initiator;
 
-    public:
+    public:        
 
         template <int N> void init()
         {
@@ -28,6 +35,7 @@ class LegProcessor
             encoder.setPositionOffset( legOffset );
 
             driver.init( driverPin1, driverPin2, driverPWM );
+            initiator.init ( &driver, &encoder );
         }        
 };
 

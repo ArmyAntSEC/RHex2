@@ -8,20 +8,29 @@
 #include "MotorPositionInitiator.h"
 #include <Arduino.h>
 #include <LogStorage.h>
-#define LOG Log << "Initiator" << this->ID << ": "
+#define LOG Log << "Initiator: "
 
 
-MotorPositionInitiator::MotorPositionInitiator(  MotorStateHandler* const _handler, MotorDriver* const _driver, 
-		HomingEncoder * const _encoder, MotorPIDRegulator * const _pid, const int _ID ):
-	MotorStateHandlerImpl(_handler, _driver ), state(NEW), encoder(_encoder), 
-	pid(_pid), ID(_ID)
+MotorPositionInitiator::MotorPositionInitiator( ):		
+		RecurringTask(100),
+		state(NEW)
 {}
 
+void MotorPositionInitiator::init( 
+	MotorDriver* _driver, HomingEncoder * _encoder )
+{
+	this->driver = _driver;
+	this->encoder = _encoder;
+	this->start();
+}
+
 void MotorPositionInitiator::run ( unsigned long int now ) {
+	RecurringTask::run(now);	
+
 	switch ( state ) {
 	case NEW:
 		LOG << "State is NEW." << endl;
-		driver->setMotorPWM(-64);
+		driver->setMotorPWM(64);
 		LOG << "Changing state to MOVING" << endl;
 		state = MOVING;		
 		break;
@@ -29,11 +38,12 @@ void MotorPositionInitiator::run ( unsigned long int now ) {
 	case MOVING:		
 		if ( encoder->isHomed() ) {
 			driver->setMotorPWM(0);
-			state = ALIGNING;
-			LOG << "Edge found. Changing state to ALIGNING." << endl;						
+			state = DONE;
+			LOG << "Edge found. Changing state to DONE." << endl;						
 		}
 		break;
 	case ALIGNING:		
+		/*
 		pid->run(now);
 		if ( pid->hasSettled(now) ) {			
 			state = DONE;
@@ -41,8 +51,10 @@ void MotorPositionInitiator::run ( unsigned long int now ) {
 			handler->startMainLoop();
 		}
 		break;
+		*/
 	case DONE:
 		//DO nothing
+		break;
 	default:
 		LOG << "Assertion failed. State should never happen." << endl;
 	}

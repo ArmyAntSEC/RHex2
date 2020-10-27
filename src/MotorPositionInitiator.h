@@ -13,18 +13,17 @@
 #include "HomingEncoder.h"
 #include "MotorPIDRegulator.h"
 
-class MotorPositionInitiator: public MotorStateHandlerImpl { // @suppress("Class has a virtual method and non-virtual destructor")
+class MotorPositionInitiator: public RecurringTask //: public MotorStateHandlerImpl { // @suppress("Class has a virtual method and non-virtual destructor")
+{ 
 public:
-	MotorPositionInitiator (  MotorStateHandler* const _handler, MotorDriver* const _driver, 
-		HomingEncoder * const _encoder, MotorPIDRegulator * const _pid, const int _ID );
+	MotorPositionInitiator ();
 	virtual void run(unsigned long int now);
-	virtual void init() {}
+	virtual void init( MotorDriver * _driver, HomingEncoder * _encoder );	
 private:
 	enum State { NEW, MOVING, ALIGNING, DONE };
 	State state;
-	HomingEncoder * const encoder;
-	MotorPIDRegulator * const pid;
-	const int ID;
+	MotorDriver * driver;
+	HomingEncoder *  encoder;			
 };
 
 #endif /* MOTORPOSITIONINITIATOR_H_ */
