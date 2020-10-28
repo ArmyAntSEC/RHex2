@@ -9,6 +9,7 @@
 #define MOTORDRIVER_H_
 
 #include <Arduino.h>
+#include <LogStorage.h>
 #include <pwm_lib.h>
 using namespace arduino_due::pwm_lib;
 
@@ -32,7 +33,7 @@ public:
 	}
 
 	void setMotorPWM( int motorPWM )
-	{
+	{		
 		//Stop drivers if power is slow.
 		if ( abs(motorPWM) < 20 ) {
 			motorPWM = 0;
@@ -46,7 +47,7 @@ public:
 			digitalWrite ( this->driverPinOne, LOW);		
 		}
 
-		this->driverPinPWM->set_duty(motorPWM*20); //Convert from 0-255 to 0-5120;
+		this->driverPinPWM->set_duty(abs(motorPWM)*20); //Convert from 0-255 to 0-5120;
 	}
 };
 

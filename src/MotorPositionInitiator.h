@@ -41,16 +41,17 @@ public:
 		switch ( state ) {
 		case NEW:
 			Log << "State is NEW." << endl;
-			driver->setMotorPWM(64);
+			driver->setMotorPWM(-64);
 			Log << "Changing state to MOVING" << endl;
 			state = MOVING;		
 			break;
 
-		case MOVING:		
+		case MOVING:				
 			if ( encoder->isHomed() ) {
-				driver->setMotorPWM(0);
+				driver->setMotorPWM(0);				
+				pid->setWantedPositionRev(0, now);
 				state = ALIGNING;
-				Log << "Edge found. Changing state to DONE." << endl;						
+				Log << "Edge found. Changing state to DONE." << endl;										
 			}
 			break;
 		case ALIGNING:					

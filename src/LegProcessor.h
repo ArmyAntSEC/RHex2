@@ -42,7 +42,7 @@ class LegProcessor
                     
             driver.init( driverPin1, driverPin2, driverPWM );
         
-            pid.init( Kp, Ki, Kd, sampleTime, P_ON_E, REVERSE );            
+            pid.init( Kp, Ki, Kd, sampleTime, P_ON_E, DIRECT );            
         
             regulator.init( &driver, &encoder, &pid );
             initiator.init ( &driver, &encoder, &regulator );

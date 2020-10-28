@@ -10,7 +10,7 @@
 #define LOG Log << "Main: "
 
 
-SerialEchoBeacon beacon_01(1000, 1);
+SerialEchoBeacon beacon_01(500, 1);
 
 TaskScheduler sched;
 

@@ -16,7 +16,7 @@ class MotorPIDRegulator {
 public:	
 	virtual void run(unsigned long int now);
 	virtual void init( MotorDriver* _driver, HomingEncoder * _encoder, PID* _pid );
-	void setWantedPositionRev( float _setPointRev, unsigned long int now );
+	void setWantedPositionRev( float _setPointRev, unsigned long int now );	
 	boolean hasSettled( unsigned long int now );
 private:
 	double angleDifference( double angle1, double angle2 );
@@ -24,6 +24,7 @@ private:
 	HomingEncoder * encoder;
 	PID * pid;
 	double setPointRev;
+	double zeroPositionRev;
 	int ID;
 	unsigned long int lastChangeSetpointTime;
 };

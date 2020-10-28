@@ -9,12 +9,13 @@
 #include <Arduino.h>
 #include <LogStorage.h>
 
-void MotorPIDRegulator::init ( MotorDriver* _driver, HomingEncoder * _encoder, PID* _pid )	
+void MotorPIDRegulator::init ( MotorDriver* _driver, HomingEncoder * _encoder, 
+	PID* _pid )	
 {
 	driver = _driver;
 	encoder = _encoder;
 	pid = _pid;
-	setPointRev = 0;
+	setPointRev = 0;	
 }
 
 void MotorPIDRegulator::setWantedPositionRev( float _setPointRev, unsigned long int now ) {
