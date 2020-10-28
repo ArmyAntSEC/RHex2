@@ -13,7 +13,7 @@
  *    The parameters specified here are those for for which we can't set up
  *    reliable defaults, so we need to have the user set them.
  ***************************************************************************/
-PID::PID( double Kp, double Ki, double Kd, int sampleTime, int POn, int ControllerDirection)
+void PID::init( double Kp, double Ki, double Kd, int sampleTime, int POn, int ControllerDirection)
 {
     PID::SetOutputLimits(-250, 250);				//default output limit corresponds to
 												//the arduino pwm limits
@@ -35,6 +35,7 @@ double PID::Compute(double input, double setPoint)
 {
 	/*Compute all the working error variables*/
 	double error = this->angleDifference(setPoint, input);
+   
 	double dInput = (input - lastInput);
 	outputSum+= (ki * error);
 

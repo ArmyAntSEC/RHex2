@@ -23,6 +23,11 @@ class LegForwardLeft : public LegProcessor {
             driverPin1 = 4;
             driverPin2 = 5;   
             driverPWM = &pwmWrapper;     
+
+            Kp = 1000;
+            Ki = 0;
+            Kd = 0;
+            sampleTime = 100 ;
         }
 
         void init()

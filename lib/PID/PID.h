@@ -18,8 +18,9 @@ class PID
   #define P_ON_M 0
   #define P_ON_E 1
 
-  //commonly used functions **************************************************************************
-    PID(double Kp, double Ki, double Kd, int sampleTime, int POn, int ControllerDirection);  // * constructor.  Initial tuning parameters are set here as well as sample time.
+  	//commonly used functions **************************************************************************
+    // De-facto constructor.  Initial tuning parameters are set here as well as sample time.
+	void init(double Kp, double Ki, double Kd, int sampleTime, int POn, int ControllerDirection);  
 
     double Compute(double input, double setPoint); // Does a computation. Should be called at the interval
     											// defined when creating the object.

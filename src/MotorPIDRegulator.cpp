@@ -8,15 +8,13 @@
 #include "MotorPIDRegulator.h"
 #include <Arduino.h>
 #include <LogStorage.h>
-#define LOG Log << "Regulator " << this->ID << ": "
 
-MotorPIDRegulator::MotorPIDRegulator ( MotorDriver* _driver, HomingEncoder * _encoder, PID* _pid, int _ID ):
-	driver(_driver), encoder(_encoder), pid(_pid), setPointRev(0), ID(_ID)
+void MotorPIDRegulator::init ( MotorDriver* _driver, HomingEncoder * _encoder, PID* _pid )	
 {
-}
-
-void MotorPIDRegulator::init() {	
-	//Nothing to do here
+	driver = _driver;
+	encoder = _encoder;
+	pid = _pid;
+	setPointRev = 0;
 }
 
 void MotorPIDRegulator::setWantedPositionRev( float _setPointRev, unsigned long int now ) {
@@ -38,7 +36,7 @@ void MotorPIDRegulator::run(unsigned long int) {
 	double PwmValue = this->pid->Compute(currentPositionRev, this->setPointRev );
 
 	this->driver->setMotorPWM((int)PwmValue);
-	LOG << "Step: " << currentPositionClicks << 
+	Log << "Step: " << currentPositionClicks << 
 		", " << currentPositionRev << ", " << this->setPointRev << ", " <<
 		", " << PwmValue << endl;	
 }

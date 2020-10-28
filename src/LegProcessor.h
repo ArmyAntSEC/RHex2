@@ -22,20 +22,30 @@ class LegProcessor
         int driverPin2;
         pwm_base * driverPWM;
 
+        double Kp;
+        double Ki;
+        double Kd;
+        int sampleTime;
+
     public:
         HomingEncoder encoder;
         MotorDriver driver;
         MotorPositionInitiator initiator;
+        MotorPIDRegulator regulator;
+        PID pid;
 
     public:        
-
         template <int N> void init()
         {
             encoder.init<N>( encoderPin1, encoderPin2, breakerPin );
             encoder.setPositionOffset( legOffset );
-
+                    
             driver.init( driverPin1, driverPin2, driverPWM );
-            initiator.init ( &driver, &encoder );
+        
+            pid.init( Kp, Ki, Kd, sampleTime, P_ON_E, REVERSE );            
+        
+            regulator.init( &driver, &encoder, &pid );
+            initiator.init ( &driver, &encoder, &regulator );
         }        
 };
 
