@@ -9,7 +9,8 @@ class LegForwardRight : public LegProcessor {
         pwm_wrapper<pwm<pwm_pin::PWML4_PC21>> pwmWrapper;
 
     public:
-        LegForwardRight():
+        LegForwardRight( unsigned long int _rate):
+            LegProcessor(_rate),
             pwmWrapper(driverPinPWM_HW)  
         {        
             encoderPin1 = 10;
@@ -23,8 +24,7 @@ class LegForwardRight : public LegProcessor {
 
             Kp = 1000;
             Ki = 0;
-            Kd = 0;
-            sampleTime = 100;
+            Kd = 0;            
         }
 
         void init()

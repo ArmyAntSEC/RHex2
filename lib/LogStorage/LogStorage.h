@@ -19,7 +19,7 @@ class LogStorage {
         LogStorage& operator<< ( int num );
         LogStorage& operator<< ( unsigned int num );
         LogStorage& operator<< ( double num );
-        LogStorage& operator<< (  _EndlCode );
+        LogStorage& operator<< (  _EndlCode );        
         void sendToSerial();
 };
 

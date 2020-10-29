@@ -12,8 +12,8 @@ class LegForwardLeft : public LegProcessor {
         pwm_wrapper<pwm<pwm_pin::PWML7_PC24>> pwmWrapper;
 
     public:
-        LegForwardLeft(): 
-            pwmWrapper(driverPinPWM_HW)    
+        LegForwardLeft( unsigned long int _rate ): 
+            LegProcessor(_rate), pwmWrapper(driverPinPWM_HW)    
         {
             encoderPin1 = 2;
             encoderPin2 = 3;
@@ -26,8 +26,7 @@ class LegForwardLeft : public LegProcessor {
 
             Kp = 500;
             Ki = 0;
-            Kd = 0;
-            sampleTime = 100 ;
+            Kd = 0;            
         }
 
         void init()

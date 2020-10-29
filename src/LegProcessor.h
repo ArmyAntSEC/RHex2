@@ -13,6 +13,8 @@ using namespace arduino_due::pwm_lib;
 class LegProcessor
 {
     public:
+        const int sampleTime;
+
         int encoderPin1;
         int encoderPin2;
         int breakerPin;
@@ -25,7 +27,7 @@ class LegProcessor
         double Kp;
         double Ki;
         double Kd;
-        int sampleTime;
+        
 
     public:
         HomingEncoder encoder;
@@ -33,8 +35,13 @@ class LegProcessor
         MotorPositionInitiator initiator;
         MotorPIDRegulator regulator;
         PID pid;
+        MotorStateHandler handler;
 
-    public:        
+    public:       
+        LegProcessor(unsigned long int _rate):  
+            sampleTime( _rate ), handler( _rate )
+        {}
+
         template <int N> void init()
         {
             encoder.init<N>( encoderPin1, encoderPin2, breakerPin );
@@ -45,7 +52,11 @@ class LegProcessor
             pid.init( Kp, Ki, Kd, sampleTime, P_ON_E, DIRECT );            
         
             regulator.init( &driver, &encoder, &pid );
-            initiator.init ( &driver, &encoder, &regulator );
+            initiator.init ( &handler, &driver, &encoder, &regulator );
+
+            handler.setInitiator( &initiator );
+            
+            handler.startInitiator();
         }        
 };
 

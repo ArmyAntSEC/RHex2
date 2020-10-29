@@ -7,36 +7,18 @@
 #include "LegForwardRight.h"
 
 #include <LogStorage.h>
-#define LOG Log << "Main: "
 
+#define SAMPLE_TIME 100
+
+#undef LOG
+#define LOG Log << "Main: "
 
 SerialEchoBeacon beacon_01(500, 1);
 
 TaskScheduler sched;
 
-LegForwardLeft leftForward;
-LegForwardRight rightForward;
-
-/*
-double Kp = 1000;
-double Ki = 0;
-double Kd = 0;
-int sampleTime = 200 ;
-PID pidLeft(Kp, Ki, Kd, sampleTime, P_ON_E, REVERSE );
-PID pidRight(Kp, Ki, Kd, sampleTime, P_ON_E, REVERSE );
-
-MotorStateHandler stateHandlerLeft ( sampleTime, 1 );
-MotorStateHandler stateHandlerRight ( sampleTime, 2 );
-
-MotorPIDRegulator regulatorLeft( &driverLeft, &encoderLeft, &pidLeft, 1 );
-MotorPIDRegulator regulatorRight( &driverRight, &encoderRight, &pidRight, 2 );
-
-MotorPositionInitiator initiatorLeft(  &stateHandlerLeft, &driverLeft, 
-	&encoderLeft, &regulatorLeft, &leftConfig );
-MotorPositionInitiator initiatorRight(  &stateHandlerRight, &driverRight, 
-	&encoderRight, &regulatorLeft, &rightConfig );
-*/
-
+LegForwardLeft leftForward(SAMPLE_TIME);
+LegForwardRight rightForward(SAMPLE_TIME);
 
 void setup() {
   	
@@ -45,10 +27,9 @@ void setup() {
 	Log << "\n\n\n\n" << "Hello World again!" << endl;
 
 	leftForward.init();	
-	//leftForward.driver.setMotorPWM(64);		
 	rightForward.init();	
 
-	sched.add( &(leftForward.initiator) );
+	sched.add( &(leftForward.handler) );
 
 	beacon_01.init(millis());
 	sched.add( &beacon_01 );
