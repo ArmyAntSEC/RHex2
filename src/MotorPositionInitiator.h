@@ -16,7 +16,7 @@
 #include <LogStorage.h>
 
 #undef LOG
-#define LOG Log << "Main: "
+#define LOG Log << "Initiator: "
 
 class MotorPositionInitiator: public MotorStateHandlerImpl // @suppress("Class has a virtual method and non-virtual destructor")
 { 
@@ -29,21 +29,20 @@ public:
 	virtual void init( MotorStateHandler * _handler, MotorDriver * _driver, 
 	HomingEncoder * _encoder, MotorPIDRegulator * _pid )
 	{
-		MotorStateHandlerImpl::init( _handler, driver );
+		MotorStateHandlerImpl::init( _handler, _driver );
 		this->encoder = _encoder;
 		this->pid = _pid;		
 	}
 
 	virtual void run(unsigned long int now)
-	{		
+	{				
 		switch ( state ) {
 		case NEW:
 			LOG << "State is NEW." << endl;
 			driver->setMotorPWM(-64);
 			LOG << "Changing state to MOVING" << endl;
 			state = MOVING;		
-			break;
-
+			break;		
 		case MOVING:				
 			if ( encoder->isHomed() ) {
 				driver->setMotorPWM(0);				
@@ -62,7 +61,7 @@ public:
 			break;		
 		case DONE:
 			//DO nothing
-			break;
+			break;		
 		default:
 			LOG << "Assertion failed. State should never happen." << endl;
 		}

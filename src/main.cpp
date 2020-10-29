@@ -18,7 +18,6 @@ SerialEchoBeacon beacon_01(500, 1);
 TaskScheduler sched;
 
 LegForwardLeft leftForward(SAMPLE_TIME);
-LegForwardRight rightForward(SAMPLE_TIME);
 
 void setup() {
   	
@@ -26,40 +25,13 @@ void setup() {
 	Serial.begin(9600);
 	Log << "\n\n\n\n" << "Hello World again!" << endl;
 
-	leftForward.init();	
-	rightForward.init();	
+	leftForward.init();		
 
 	sched.add( &(leftForward.handler) );
 
 	beacon_01.init(millis());
 	sched.add( &beacon_01 );
 
-	/*
-	stateHandlerLeft.setInitiator(&initiatorLeft);
-	stateHandlerLeft.startInitiator();
-	stateHandlerLeft.init(millis());
-	
-	stateHandlerRight.setInitiator(&initiatorRight);
-	stateHandlerRight.startInitiator();
-	stateHandlerRight.init(millis());
-
-	//Add the objects to the scheduler
-	
-  	
-	sched.add( &stateHandlerLeft );
-	sched.add( &stateHandlerRight );
-	
-	driverLeft.init();
-	driverRight.init();
-	
-
-	//Make sure the motors are not running
-  	driverLeft.setMotorPWM(0);
-	driverRight.setMotorPWM(0);
-
-	regulatorLeft.setWantedPositionRev(-1.4, now);  
-	regulatorRight.setWantedPositionRev(-1.4, now);  
-	*/
 }
 
 unsigned long int loops = 0;
@@ -73,8 +45,7 @@ void loop() {
 			unsigned long int totalTime = millis();			
 			LOG << "Done with " << loops << " loops in " << totalTime << " ms for a rate of " << (int)floor(loops / (float)totalTime) << " loops/ms" << endl;			
 			Log.sendToSerial();			
-			leftForward.driver.setMotorPWM(0);
-			rightForward.driver.setMotorPWM(0);			
+			leftForward.driver.setMotorPWM(0);			
 		}
 	}
 }

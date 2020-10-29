@@ -20,7 +20,7 @@ void RecurringTask::init( unsigned long int now = 0 ) {
 }
 
 //If runTime != 0, check if we should run.
-bool RecurringTask::canRun(unsigned long int now) {
+bool RecurringTask::canRun(unsigned long int now) {	
 	return this->isRunning && now > this->runTime;
 }
 

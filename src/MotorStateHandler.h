@@ -24,13 +24,13 @@ public:
 	{}
 
 	virtual void run(unsigned long int now)
-	{
-		RecurringTask::run(now);
+	{		
+		RecurringTask::run(now);	
 		if ( currentState != 0 ) {			
 			currentState->run(now);
 		} else {	
 			LOG << "No implementation to run" << endl;	
-		}
+		}		
 	}
 
 	void startInitiator()
@@ -42,14 +42,15 @@ public:
 	{	
 		currentState = mainLoop;
 	}
-	void setInitiator(MotorStateHandlerImpl* initiator) {
-		this->initiator = initiator;
-	}
 
-	void setMainLoop(MotorStateHandlerImpl* mainLoop) {
-		this->mainLoop = mainLoop;
+	void init(MotorStateHandlerImpl* _initiator, MotorStateHandlerImpl* _mainLoop) {
+		LOG << "State Handler Init" << endl;
+		
+		initiator = _initiator;
+		mainLoop = _mainLoop;		
+		
+		this->start();		
 	}
-
 private:		
 	MotorStateHandlerImpl* initiator;
 	MotorStateHandlerImpl* mainLoop;

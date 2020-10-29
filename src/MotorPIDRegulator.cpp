@@ -25,7 +25,7 @@ void MotorPIDRegulator::setWantedPositionRev( float _setPointRev, unsigned long 
 
 boolean MotorPIDRegulator::hasSettled( unsigned long int now)
 {
-	return now - this->lastChangeSetpointTime > 5000;
+	return now - this->lastChangeSetpointTime > 2000;
 }
 
 void MotorPIDRegulator::run(unsigned long int) {

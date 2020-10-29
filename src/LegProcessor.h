@@ -54,9 +54,8 @@ class LegProcessor
             regulator.init( &driver, &encoder, &pid );
             initiator.init ( &handler, &driver, &encoder, &regulator );
 
-            handler.setInitiator( &initiator );
-            
-            handler.startInitiator();
+            handler.init( &initiator, 0);            
+            handler.startInitiator();            
         }        
 };
 
