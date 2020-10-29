@@ -9,6 +9,8 @@
 #define MOTORSTATEHANDLERIMPL_H_
 
 #include "MotorDriver.h"
+#include "HomingEncoder.h"
+#include "MotorPIDRegulator.h"
 
 class MotorStateHandler;
 
@@ -16,15 +18,20 @@ class MotorStateHandlerImpl { // @suppress("Class has a virtual method and non-v
 public:	
 	virtual void run(unsigned long int now) = 0;
 	
-	virtual void init( MotorStateHandler * _handler, MotorDriver * _driver )
+	virtual void init( MotorStateHandler * _handler, MotorDriver * _driver, 
+		HomingEncoder * _encoder, MotorPIDRegulator * _pid )
 	{
 		handler = _handler;
 		driver = _driver;
+		encoder = _encoder;
+		pid = _pid;
 	}
 
 protected:
 	MotorStateHandler* handler;
 	MotorDriver* driver;
+	HomingEncoder* encoder;
+	MotorPIDRegulator* pid;
 };
 
 #include "MotorStateHandler.h"

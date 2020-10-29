@@ -26,14 +26,6 @@ public:
 	{		
 	}
 
-	virtual void init( MotorStateHandler * _handler, MotorDriver * _driver, 
-	HomingEncoder * _encoder, MotorPIDRegulator * _pid )
-	{
-		MotorStateHandlerImpl::init( _handler, _driver );
-		this->encoder = _encoder;
-		this->pid = _pid;		
-	}
-
 	virtual void run(unsigned long int now)
 	{				
 		switch ( state ) {
@@ -70,9 +62,7 @@ public:
 
 private:
 	enum State { NEW, MOVING, ALIGNING, DONE };
-	State state;
-	HomingEncoder *  encoder;			
-	MotorPIDRegulator * pid;		
+	State state;		
 };
 
 

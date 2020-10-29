@@ -9,8 +9,8 @@ class LegForwardRight : public LegProcessor {
         pwm_wrapper<pwm<pwm_pin::PWML4_PC21>> pwmWrapper;
 
     public:
-        LegForwardRight( unsigned long int _rate):
-            LegProcessor(_rate),
+        LegForwardRight( unsigned long int _rate, LegPacingMasterClock * _masterClock):
+            LegProcessor(_rate, _masterClock),
             pwmWrapper(driverPinPWM_HW)  
         {        
             encoderPin1 = 10;

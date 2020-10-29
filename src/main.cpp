@@ -2,13 +2,14 @@
 #include <math.h>
 #include <TaskScheduler.h>
 #include <SerialEchoBeacon.h>
+#include <LogStorage.h>
 
 #include "LegForwardLeft.h"
 #include "LegForwardRight.h"
-
-#include <LogStorage.h>
+#include "LegPacingMasterClock.h"
 
 #define SAMPLE_TIME 100
+#define LEG_ROTATIONS_PER_MINUTE 30
 
 #undef LOG
 #define LOG Log << "Main: "
@@ -17,10 +18,14 @@ SerialEchoBeacon beacon_01(500, 1);
 
 TaskScheduler sched;
 
-LegForwardLeft leftForward(SAMPLE_TIME);
+LegPacingMasterClock legMasterClock (SAMPLE_TIME);
+
+LegForwardLeft leftForward(SAMPLE_TIME, &legMasterClock );
 
 void setup() {
   	
+	unsigned long int now = millis();
+
 	//Initilaize the communication.
 	Serial.begin(9600);
 	Log << "\n\n\n\n" << "Hello World again!" << endl;
@@ -32,6 +37,8 @@ void setup() {
 	beacon_01.init(millis());
 	sched.add( &beacon_01 );
 
+	legMasterClock.init( now, LEG_ROTATIONS_PER_MINUTE );
+	sched.add( &legMasterClock );
 }
 
 unsigned long int loops = 0;
