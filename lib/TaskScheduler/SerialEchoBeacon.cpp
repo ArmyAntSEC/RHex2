@@ -15,5 +15,5 @@ SerialEchoBeacon::SerialEchoBeacon(unsigned long int _rate, const int _ID)
 
 void SerialEchoBeacon::run(unsigned long int now) {
 	RecurringTask::run(now);
-	Log << "Beacon " << this->ID << ": ping...." << endl;
+	Log << "Beacon (" << getRate() << ", " << this->ID << "): ping...." << endl;
 }

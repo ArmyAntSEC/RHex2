@@ -9,12 +9,12 @@
 #include "LegPacingMasterClock.h"
 
 #define SAMPLE_TIME 100
-#define LEG_ROTATIONS_PER_MINUTE 30
+#define LEG_ROTATIONS_PER_MINUTE 60
 
 #undef LOG
 #define LOG Log << "Main: "
 
-SerialEchoBeacon beacon_01(500, 1);
+SerialEchoBeacon beacon_01(1000, 1);
 
 TaskScheduler sched;
 
@@ -45,14 +45,15 @@ unsigned long int loops = 0;
 bool done = false;
 void loop() {
 	while ( done == false ) {
-		if ( loops++ < 1e6 ) {
+		if ( loops++ < 2e6 ) {
 			sched.run();
 		} else {
 			done = true;
 			unsigned long int totalTime = millis();			
+			leftForward.driver.setMotorPWM(0);			
 			LOG << "Done with " << loops << " loops in " << totalTime << " ms for a rate of " << (int)floor(loops / (float)totalTime) << " loops/ms" << endl;			
 			Log.sendToSerial();			
-			leftForward.driver.setMotorPWM(0);			
+			
 		}
 	}
 }

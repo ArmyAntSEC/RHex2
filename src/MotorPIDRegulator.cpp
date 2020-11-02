@@ -25,7 +25,7 @@ void MotorPIDRegulator::setWantedPositionRev( float _setPointRev, unsigned long 
 
 boolean MotorPIDRegulator::hasSettled( unsigned long int now)
 {
-	return now - this->lastChangeSetpointTime > 2000;
+	return now - this->lastChangeSetpointTime > 1000;
 }
 
 void MotorPIDRegulator::run(unsigned long int) {
@@ -38,6 +38,6 @@ void MotorPIDRegulator::run(unsigned long int) {
 
 	this->driver->setMotorPWM((int)PwmValue);
 	Log << "Step: " << currentPositionClicks << 
-		", " << currentPositionRev << ", " << this->setPointRev << ", " <<
+		", " << currentPositionRev << ", " << this->setPointRev << 
 		", " << PwmValue << endl;	
 }

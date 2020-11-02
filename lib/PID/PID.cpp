@@ -31,12 +31,12 @@ void PID::init( double Kp, double Ki, double Kd, int sampleTime, int POn, int Co
  *   pid Output needs to be computed.  returns true when the output is computed,
  *   false when nothing has been done.
  **********************************************************************************/
-double PID::Compute(double input, double setPoint)
+double PID::Compute(double inputAngleRev, double setPointAngleRev)
 {
 	/*Compute all the working error variables*/
-	double error = this->angleDifference(setPoint, input);
+	double error = this->angleDifferenceRev(setPointAngleRev, inputAngleRev);
    
-	double dInput = (input - lastInput);
+	double dInput = this->angleDifferenceRev(inputAngleRev, lastInput);
 	outputSum+= (ki * error);
 
 	/*Add Proportional on Measurement, if P_ON_M is specified*/
@@ -57,7 +57,7 @@ double PID::Compute(double input, double setPoint)
 	else if(output < outMin) output = outMin;
 
 	/*Remember some variables for next time*/
-	lastInput = input;
+	lastInput = inputAngleRev;
 	return output;
 }
 

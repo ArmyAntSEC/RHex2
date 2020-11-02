@@ -31,7 +31,7 @@ public:
 		switch ( state ) {
 		case NEW:
 			LOG << "State is NEW." << endl;
-			driver->setMotorPWM(-64);
+			driver->setMotorPWM(-40);
 			LOG << "Changing state to MOVING" << endl;
 			state = MOVING;		
 			break;		
@@ -48,7 +48,7 @@ public:
 			if ( pid->hasSettled(now) ) {			
 				state = DONE;
 				LOG << "Regulator settled. Done." << endl;
-				handler->startMainLoop();
+				handler->startMainLoop( now );
 			}						
 			break;		
 		case DONE:

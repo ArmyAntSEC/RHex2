@@ -20,6 +20,12 @@ class LegPacingMasterClock: public RecurringTask
             this->start();            
         }
 
+        void restart( unsigned long int _now )
+        {
+            angleRev = 0;
+            lastNow = _now;
+        }
+
         double getAngleRev()
         {
             return this->angleRev;
@@ -34,8 +40,9 @@ class LegPacingMasterClock: public RecurringTask
         {
             RecurringTask::run(now);
             unsigned long int timeDelta = now - lastNow;
-            angleRev += timeDelta*1000*60*rotationsPerMinute;
-            angleRev = fmod( angleRev, 2*M_PI );
+            lastNow = now;
+            angleRev += rotationsPerMinute * timeDelta/1000.0/60.0;
+            angleRev = fmod( angleRev, 1 );
         }
 
     private:

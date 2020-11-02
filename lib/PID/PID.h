@@ -22,7 +22,7 @@ class PID
     // De-facto constructor.  Initial tuning parameters are set here as well as sample time.
 	void init(double Kp, double Ki, double Kd, int sampleTime, int POn, int ControllerDirection);  
 
-    double Compute(double input, double setPoint); // Does a computation. Should be called at the interval
+    double Compute(double inputAngleRev, double setPointAngleRev); // Does a computation. Should be called at the interval
     											// defined when creating the object.
 
     void SetOutputLimits(double Min, double Max); // * clamps the output to a specific range. 0-255 by default, but
@@ -75,11 +75,12 @@ class PID
 	double outMin, outMax;
 	bool pOnE;
 
-	inline double angleDifference( double angle1, double angle2 )
+	inline double angleDifferenceRev( double angle1Rev, double angle2Rev )
 	{
-	    double diff = fmod(( angle2 - angle1 + 180 ), 360) - 180;
-	    return diff < -180 ? diff + 360 : diff;
+	    double diff = fmod(( angle2Rev - angle1Rev + 0.5 ), 1) - 0.5;
+	    return diff < -0.5 ? diff + 1 : diff;
 	}
+
 };
 #endif
 

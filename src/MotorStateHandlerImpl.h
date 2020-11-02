@@ -27,6 +27,9 @@ public:
 		pid = _pid;
 	}
 
+	virtual void restart( unsigned long int _now )
+	{}
+
 protected:
 	MotorStateHandler* handler;
 	MotorDriver* driver;

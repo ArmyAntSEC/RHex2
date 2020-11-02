@@ -38,8 +38,9 @@ public:
 		currentState = initiator;
 	}
 
-	void startMainLoop() 
+	void startMainLoop( unsigned long int _now ) 
 	{	
+		mainLoop->restart( _now );
 		currentState = mainLoop;
 	}
 

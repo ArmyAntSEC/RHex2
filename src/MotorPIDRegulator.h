@@ -18,8 +18,7 @@ public:
 	virtual void init( MotorDriver* _driver, HomingEncoder * _encoder, PID* _pid );
 	void setWantedPositionRev( float _setPointRev, unsigned long int now );	
 	boolean hasSettled( unsigned long int now );
-private:
-	double angleDifference( double angle1, double angle2 );
+private:	
 	MotorDriver * driver;
 	HomingEncoder * encoder;
 	PID * pid;
