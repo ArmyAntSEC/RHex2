@@ -1,6 +1,8 @@
 #ifndef _LOGSTORAGE_H_
 #define _LOGSTORAGE_H_
 
+#include <Arduino.h>
+
 enum _EndlCode { endl };
 
 #define LOG_BUFFER_LEN 8192
@@ -16,6 +18,7 @@ class LogStorage {
     public:
         LogStorage();
         LogStorage& operator<< ( char const * str );
+        LogStorage& operator<< ( String str );
         LogStorage& operator<< ( long int num );
         LogStorage& operator<< ( long unsigned int num );
         LogStorage& operator<< ( int num );

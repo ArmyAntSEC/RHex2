@@ -13,12 +13,10 @@
 #include "MotorPIDRegulator.h"
 
 #include <Arduino.h>
-#include <LogStorage.h>
+#include <Loggable.h>
 
-#undef LOG
-#define LOG Log << "Initiator: "
-
-class MotorPositionInitiator: public MotorStateHandlerImpl // @suppress("Class has a virtual method and non-virtual destructor")
+class MotorPositionInitiator: public MotorStateHandlerImpl,
+	public Loggable // @suppress("Class has a virtual method and non-virtual destructor")
 { 
 public:
 	MotorPositionInitiator ():		
@@ -36,9 +34,9 @@ public:
 	{				
 		switch ( state ) {
 		case NEW:
-			LOG << "State is NEW." << endl;
+			log(now) << "State is NEW." << endl;
 			driver->setMotorPWM(-40);
-			LOG << "Changing state to MOVING" << endl;
+			log(now) << "Changing state to MOVING" << endl;
 			state = MOVING;		
 			break;		
 		case MOVING:				
@@ -46,21 +44,21 @@ public:
 				driver->setMotorPWM(0);				
 				pid->setWantedPositionRev(0, now);
 				state = ALIGNING;
-				LOG << "Edge found. Changing state to DONE." << endl;										
+				log(now) << "Edge found. Changing state to DONE." << endl;										
 			}
 			break;
 		case ALIGNING:					
 			pid->run(now);			
 			if ( pid->hasSettled(now) ) {			
 				state = DONE;
-				LOG << "Regulator settled. Done." << endl;				
+				log(now) << "Regulator settled. Done." << endl;				
 			}						
 			break;		
 		case DONE:
 			//DO nothing
 			break;		
 		default:
-			LOG << "Assertion failed. State should never happen." << endl;
+			log(now) << "Assertion failed. State should never happen." << endl;
 		}
 	}
 	

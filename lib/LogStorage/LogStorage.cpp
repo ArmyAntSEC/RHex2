@@ -36,6 +36,13 @@ LogStorage& LogStorage::operator<< ( char const* str )
     return *this;
 }
 
+LogStorage& LogStorage::operator<< ( String str )
+{
+    this->writeToBuffer( str.c_str() );
+    return *this;
+}
+
+
 LogStorage& LogStorage::operator<< ( long int num )
 {
     char buffer[20];

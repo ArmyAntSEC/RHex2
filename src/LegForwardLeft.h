@@ -32,6 +32,7 @@ class LegForwardLeft : public LegProcessor {
         void init()
         {
             LegProcessor::init<1>();
+            this->initiator.setID("Initiator", "LF" );
         }
         
 };    
