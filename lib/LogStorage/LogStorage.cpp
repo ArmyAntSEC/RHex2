@@ -5,7 +5,7 @@
 LogStorage Log;
 
 LogStorage::LogStorage():
-    bufferSize(LOG_BUFFER_LEN), writePos(0)
+    bufferSize(LOG_BUFFER_LEN), writePos(0), looped(false)
 {
     memset( this->buffer, 0, this->bufferSize*sizeof(char) );
 }
@@ -13,18 +13,20 @@ LogStorage::LogStorage():
 void LogStorage::writeToBuffer( char const* buffer )
 {
     const int bufferLen = strlen(buffer);
-    if ( bufferLen + this->writePos < this->bufferSize ) 
+    if ( bufferLen + this->writePos < (this->bufferSize-1) ) 
     {
         strcpy( this->buffer+this->writePos, buffer );
         this->writePos += bufferLen;
     } else {
-        //We write a message saying we have overflowed
-        char temp[] = "\n**OVERFLOW**\n";
-        int tempLen = strlen( temp );
-        strcpy( this->buffer+this->bufferSize-tempLen, temp );
+        int spaceLeft = (this->bufferSize-1) - this->writePos;
+        strncpy( this->buffer+this->writePos, buffer, spaceLeft );
+
+        int overFlowLength = bufferLen - spaceLeft;
+        strcpy( this->buffer, buffer + spaceLeft );
+
+        this->writePos = overFlowLength;
         
-        //Make sure we do not overwrite anything allready in the log.
-        this->writePos = this->bufferSize;
+        this->looped = true;
     }   
 }
 
@@ -97,5 +99,9 @@ LogStorage& LogStorage::operator<< (  _EndlCode )
 
 void LogStorage::sendToSerial()
 {
+    if ( looped ) {
+        //We write out what remains of the olf buffer.
+        Serial.println( this->buffer + this->writePos + 1 );
+    }
     Serial.println ( this->buffer );
 }

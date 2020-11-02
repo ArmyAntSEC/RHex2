@@ -60,9 +60,7 @@ class LegProcessor
             initiator.init ( &handler, &driver, &encoder, &regulator );
 
             scheduler.init ( &handler, &driver, &encoder, &regulator, masterClock );
-            handler.init( &initiator, &scheduler );            
-
-            handler.startInitiator();            
+            handler.init( &initiator, &scheduler );                        
         }        
 };
 

@@ -26,6 +26,12 @@ public:
 	{		
 	}
 
+	virtual void restart( unsigned long int _now )
+	{
+		this->state = NEW;
+		this->encoder->unHome();
+	}
+
 	virtual void run(unsigned long int now)
 	{				
 		switch ( state ) {
@@ -47,8 +53,7 @@ public:
 			pid->run(now);			
 			if ( pid->hasSettled(now) ) {			
 				state = DONE;
-				LOG << "Regulator settled. Done." << endl;
-				handler->startMainLoop( now );
+				LOG << "Regulator settled. Done." << endl;				
 			}						
 			break;		
 		case DONE:

@@ -28,13 +28,12 @@ public:
 		RecurringTask::run(now);	
 		if ( currentState != 0 ) {			
 			currentState->run(now);
-		} else {	
-			LOG << "No implementation to run" << endl;	
 		}		
 	}
 
-	void startInitiator()
+	void startInitiator( unsigned long int _now )
 	{		
+		initiator->restart( _now );
 		currentState = initiator;
 	}
 

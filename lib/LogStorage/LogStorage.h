@@ -9,8 +9,10 @@ class LogStorage {
     private:
         const unsigned int bufferSize;    
         unsigned int writePos;
+        bool looped;
         char buffer[LOG_BUFFER_LEN];
         void writeToBuffer( char const* buffer );
+
     public:
         LogStorage();
         LogStorage& operator<< ( char const * str );
