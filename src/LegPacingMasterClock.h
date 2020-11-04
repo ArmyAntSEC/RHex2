@@ -3,8 +3,9 @@
 
 #include <math.h>
 #include "RecurringTask.h"
+#include "Loggable.h"
 
-class LegPacingMasterClock: public RecurringTask 
+class LegPacingMasterClock: public RecurringTask, public Loggable
 {
     public:
 
@@ -43,6 +44,7 @@ class LegPacingMasterClock: public RecurringTask
             lastNow = now;
             angleRev += rotationsPerMinute * timeDelta/1000.0/60.0;
             angleRev = fmod( angleRev, 1 );
+            log(now) << " AngleRev: " << angleRev << endl;
         }
 
     private:

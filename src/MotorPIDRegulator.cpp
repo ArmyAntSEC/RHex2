@@ -38,6 +38,6 @@ void MotorPIDRegulator::run(unsigned long int now) {
 
 	this->driver->setMotorPWM((int)PwmValue);
 	log(now) << "Step: " << currentPositionClicks << 
-		", " << currentPositionRev << ", " << this->setPointRev << 
-		", " << PwmValue << endl;	
+		", CurrPos: " << currentPositionRev << ", SetPt: " << this->setPointRev << 
+		", PWM: " << PwmValue << endl;	
 }

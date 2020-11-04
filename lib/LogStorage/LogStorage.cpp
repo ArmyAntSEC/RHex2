@@ -12,7 +12,7 @@ LogStorage::LogStorage():
 
 void LogStorage::writeToBuffer( char const* buffer )
 {
-    Serial.print ( buffer );
+    //Serial.print ( buffer );
     const int bufferLen = strlen(buffer);
     if ( bufferLen + this->writePos < (this->bufferSize-1) ) 
     {
@@ -107,6 +107,7 @@ LogStorage& LogStorage::operator<< (  _EndlCode )
 
 void LogStorage::sendToSerial()
 {
+    Serial.println( "**** DUMPING LOG ***** " );
     if ( looped ) {
         //We write out what remains of the olf buffer.
         Serial.println( this->buffer + this->writePos + 1 );

@@ -20,33 +20,32 @@ class L : public Loggable
 		}
 } logger;
 
-SerialEchoBeacon beacon_01(1000);
-
 TaskScheduler sched;
 
 LegPacingMasterClock legMasterClock (SAMPLE_TIME);
 
 LegForwardLeft leftForward(SAMPLE_TIME, &legMasterClock );
+LegForwardRight rightForward(SAMPLE_TIME, &legMasterClock );
 
 void setup() {
   	logger.setID("Main", "0");
-
+	sched.setID( "Scheduler", "0" );
+	
 	unsigned long int now = millis();
 
 	//Initilaize the communication.
-	Serial.begin(9600);
+	Serial.begin(115200);
 	Serial.setTimeout(0);
 	logger(now) << "\n\n\n\n" << "Hello World again!" << endl;
 
 	leftForward.init();		
-
 	sched.add( &(leftForward.handler) );
 
-	beacon_01.init(millis());
-	beacon_01.setID( "Beacon", "1" );	
-	sched.add( &beacon_01 );
+	rightForward.init();		
+	sched.add( &(rightForward.handler) );
 
 	legMasterClock.init( now, LEG_ROTATIONS_PER_MINUTE );
+	legMasterClock.setID( "MasterClk", "0");
 	sched.add( &legMasterClock );
 	
 	logger(now) << "Setup complete" << endl;
@@ -54,6 +53,9 @@ void setup() {
 }
 
 unsigned long int loops = 0;
+unsigned long int nextPing = 1;
+unsigned long int lastPing = 0;
+
 void loop() {
 	unsigned long int now = millis();	
 	sched.run();
@@ -66,10 +68,17 @@ void loop() {
 			case 'i': //Init the legs
 				logger(now) << "Starting the initiator" << endl;
 				leftForward.handler.startInitiator(millis());
+				rightForward.handler.startInitiator(millis());
 				break;
 			case 's': //Start the main cycle
-				logger(now) << "Starting main loop" << endl;
+				logger(now) << "Starting main left loop" << endl;
 				leftForward.handler.startMainLoop(millis());
+				//rightForward.handler.startMainLoop(millis());
+				break;
+			case 'p': //Start the main cycle
+				logger(now) << "Starting main right loop" << endl;
+				//leftForward.handler.startMainLoop(millis());
+				rightForward.handler.startMainLoop(millis());
 				break;
 			case 'f': //Flush out the logger. Can potentially break the interrupts.
 				logger(now) << "Dumping log" << endl;
@@ -88,8 +97,10 @@ void loop() {
 
 	//Post regular updates
 	loops++;
-	if ( loops % (unsigned long int)1e6 == 0) {
-		unsigned long int totalTime = millis();
-		logger(now) << "Done with " << loops << " loops in " << totalTime << " ms for a rate of " << (int)floor(loops / (float)totalTime) << " loops/ms" << endl;				
+	if ( now > nextPing ) {
+		unsigned long int segmentTime = now - lastPing;
+		logger(now) << "Done with " << loops << " loops in " << segmentTime << " ms for a rate of " << (int)floor(loops / (float)segmentTime) << " loops/ms" << endl;				
+		loops = 0;
+		nextPing += 5000;
 	}
 }

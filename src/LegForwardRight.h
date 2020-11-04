@@ -16,13 +16,13 @@ class LegForwardRight : public LegProcessor {
             encoderPin1 = 10;
             encoderPin2 = 11;
             breakerPin = A1;
-            legOffset = 1500;
+            legOffset = 0;
             
             driverPin1 = 8;
             driverPin2 = 7;  
             driverPWM = &pwmWrapper;
 
-            Kp = 1000;
+            Kp = 500;
             Ki = 0;
             Kd = 0;            
         }
@@ -30,6 +30,8 @@ class LegForwardRight : public LegProcessor {
         void init()
         {
             LegProcessor::init<2>();
+            this->initiator.setID("Initiator", "RF" );
+            this->regulator.setID("Regulator", "RF");
         }
         
 };    
