@@ -12,6 +12,7 @@ LogStorage::LogStorage():
 
 void LogStorage::writeToBuffer( char const* buffer )
 {
+    Serial.print ( buffer );
     const int bufferLen = strlen(buffer);
     if ( bufferLen + this->writePos < (this->bufferSize-1) ) 
     {

@@ -11,8 +11,9 @@
 #include "PID.h"
 #include "MotorDriver.h"
 #include <HomingEncoder.h>
+#include "Loggable.h"
 
-class MotorPIDRegulator {
+class MotorPIDRegulator: public Loggable {
 public:	
 	virtual void run(unsigned long int now);
 	virtual void init( MotorDriver* _driver, HomingEncoder * _encoder, PID* _pid );

@@ -9,16 +9,15 @@
 #define SERIALECHOBEACON_H_
 
 #include "RecurringTask.h"
+#include "Loggable.h"
 
-class SerialEchoBeacon: public RecurringTask { // @suppress("Class has a virtual method and non-virtual destructor")
+class SerialEchoBeacon: public RecurringTask, 
+    public Loggable { // @suppress("Class has a virtual method and non-virtual destructor")
 
 public:
     // Create a new blinker for the specified pin and rate.
-	SerialEchoBeacon(unsigned long int _rate, const int _ID) ;
+	SerialEchoBeacon(unsigned long int _rate) ;
     virtual void run(unsigned long int now);
-
-    private:
-        const int ID;
 };
 
 #endif /* SERIALECHOBEACON_H_ */

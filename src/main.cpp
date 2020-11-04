@@ -11,10 +11,16 @@
 #define SAMPLE_TIME 100
 #define LEG_ROTATIONS_PER_MINUTE 60
 
-#undef LOG
-#define LOG Log << "Main: "
+class L : public Loggable
+{
+	public:
+		LogStorage& operator()(unsigned long int now) 
+		{
+			return this->log(now);
+		}
+} logger;
 
-SerialEchoBeacon beacon_01(1000, 1);
+SerialEchoBeacon beacon_01(1000);
 
 TaskScheduler sched;
 
@@ -23,30 +29,33 @@ LegPacingMasterClock legMasterClock (SAMPLE_TIME);
 LegForwardLeft leftForward(SAMPLE_TIME, &legMasterClock );
 
 void setup() {
-  	
+  	logger.setID("Main", "0");
+
 	unsigned long int now = millis();
 
 	//Initilaize the communication.
 	Serial.begin(9600);
 	Serial.setTimeout(0);
-	Log << "\n\n\n\n" << "Hello World again!" << endl;
+	logger(now) << "\n\n\n\n" << "Hello World again!" << endl;
 
 	leftForward.init();		
 
 	sched.add( &(leftForward.handler) );
 
 	beacon_01.init(millis());
+	beacon_01.setID( "Beacon", "1" );	
 	sched.add( &beacon_01 );
 
 	legMasterClock.init( now, LEG_ROTATIONS_PER_MINUTE );
 	sched.add( &legMasterClock );
 	
-	Log << "Setup complete" << endl;
+	logger(now) << "Setup complete" << endl;
 	Log.sendToSerial();
 }
 
 unsigned long int loops = 0;
 void loop() {
+	unsigned long int now = millis();	
 	sched.run();
 	
 	//Check if we have incoming serial data
@@ -55,24 +64,24 @@ void loop() {
 		Serial.readBytes( &input, 1 );
 		switch ( input ) {
 			case 'i': //Init the legs
-				Serial.println( "Starting the initiator" );
+				logger(now) << "Starting the initiator" << endl;
 				leftForward.handler.startInitiator(millis());
 				break;
 			case 's': //Start the main cycle
-				Serial.println( "Starting main loop" );
+				logger(now) << "Starting main loop" << endl;
 				leftForward.handler.startMainLoop(millis());
 				break;
-			case 'f': //Flush out the log. Can potentially break the interrupts.
-				Serial.println ( "Dumping log" );
+			case 'f': //Flush out the logger. Can potentially break the interrupts.
+				logger(now) << "Dumping log" << endl;
 				Log.sendToSerial();
 				break;
 			case 'b': //Break the leg movement
 				legMasterClock.stop();
-				Serial.println ( "Master clock stopped" );
+				logger(now) << "Master clock stopped" << endl;
 				break;			
 			case 'r': //Restart the main clock
 				legMasterClock.start();
-				Serial.println ( "Master clock stopped" );
+				logger(now) << "Master clock stopped" << endl;
 				break;			
 		}
 	}
@@ -81,6 +90,6 @@ void loop() {
 	loops++;
 	if ( loops % (unsigned long int)1e6 == 0) {
 		unsigned long int totalTime = millis();
-		LOG << "Done with " << loops << " loops in " << totalTime << " ms for a rate of " << (int)floor(loops / (float)totalTime) << " loops/ms" << endl;				
+		logger(now) << "Done with " << loops << " loops in " << totalTime << " ms for a rate of " << (int)floor(loops / (float)totalTime) << " loops/ms" << endl;				
 	}
 }

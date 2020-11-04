@@ -9,11 +9,11 @@
 #include <Arduino.h>
 #include <LogStorage.h>
 
-SerialEchoBeacon::SerialEchoBeacon(unsigned long int _rate, const int _ID)
-: RecurringTask(_rate), ID(_ID)
+SerialEchoBeacon::SerialEchoBeacon(unsigned long int _rate )
+: RecurringTask(_rate)
 {}
 
 void SerialEchoBeacon::run(unsigned long int now) {
 	RecurringTask::run(now);
-	Log << "Beacon (" << getRate() << ", " << this->ID << "): ping...." << endl;
+	log(now) << "Rate: " << getRate() << " Ping...." << endl;
 }

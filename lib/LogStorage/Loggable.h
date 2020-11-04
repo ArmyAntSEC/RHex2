@@ -7,8 +7,8 @@
 class Loggable
 {
     private: 
-        String className;
-        String ID;
+        String className = "N/A";
+        String ID = "N/A";
 
     public:
         void setID ( String _class, String _ID )
@@ -16,11 +16,11 @@ class Loggable
             className = _class;
             ID = _ID;
         }
-
+    
     protected:
         LogStorage& log(unsigned long int now)
         {
-            Log << "[" << now <<  "] " << className << "(" << ID << "): ";
+            Log << "[" << now/1000.0 <<  "] " << className << "(" << ID << "): ";
             return Log;
         }
 };

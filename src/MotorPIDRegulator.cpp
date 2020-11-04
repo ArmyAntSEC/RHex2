@@ -28,7 +28,7 @@ boolean MotorPIDRegulator::hasSettled( unsigned long int now)
 	return now - this->lastChangeSetpointTime > 1000;
 }
 
-void MotorPIDRegulator::run(unsigned long int) {
+void MotorPIDRegulator::run(unsigned long int now) {
 	long int currentPositionClicks = this->encoder->read();
 
 	//And compute the current position in radians
@@ -37,7 +37,7 @@ void MotorPIDRegulator::run(unsigned long int) {
 	double PwmValue = this->pid->Compute(currentPositionRev, this->setPointRev );
 
 	this->driver->setMotorPWM((int)PwmValue);
-	Log << "Step: " << currentPositionClicks << 
+	log(now) << "Step: " << currentPositionClicks << 
 		", " << currentPositionRev << ", " << this->setPointRev << 
 		", " << PwmValue << endl;	
 }
