@@ -92,6 +92,9 @@ void loop() {
 				legMasterClock.start();
 				logger(now) << "Master clock stopped" << endl;
 				break;			
+			case 'k': //Reset the processor
+				rstc_start_software_reset(RSTC);
+				break;
 		}
 	}
 

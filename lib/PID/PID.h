@@ -20,24 +20,24 @@ class PID
 
   	//commonly used functions **************************************************************************
     // De-facto constructor.  Initial tuning parameters are set here as well as sample time.
-	void init(double Kp, double Ki, double Kd, int sampleTime, int POn, int ControllerDirection);  
+	void init(float Kp, float Ki, float Kd, int sampleTime, int POn, int ControllerDirection);  
 
-    double Compute(double inputAngleRev, double setPointAngleRev); // Does a computation. Should be called at the interval
+    float Compute(float inputAngleRev, float setPointAngleRev); // Does a computation. Should be called at the interval
     											// defined when creating the object.
 
-    void SetOutputLimits(double Min, double Max); // * clamps the output to a specific range. 0-255 by default, but
+    void SetOutputLimits(float Min, float Max); // * clamps the output to a specific range. 0-255 by default, but
 										                      //   it's likely the user will want to change this depending on
 										                      //   the application
 	
 
-    void init(double input);
+    void init(float input);
 
   //available but not commonly used functions ********************************************************
-    void SetTunings(double, double,       // * While most users will set the tunings once in the 
-                    double);         	    //   constructor, this function gives the user the option
+    void SetTunings(float, float,       // * While most users will set the tunings once in the 
+                    float);         	    //   constructor, this function gives the user the option
                                           //   of changing tunings during runtime for Adaptive control
-    void SetTunings(double, double,       // * overload for specifying proportional mode
-                    double, int);         	  
+    void SetTunings(float, float,       // * overload for specifying proportional mode
+                    float, int);         	  
 
 	void SetControllerDirection(int);	  // * Sets the Direction, or "Action" of the controller. DIRECT
 										  //   means the output will increase when error is positive. REVERSE
@@ -50,34 +50,34 @@ class PID
 
 
   //Display functions ****************************************************************
-	double GetKp();						  // These functions query the pid for interal values.
-	double GetKi();						  //  they were created mainly for the pid front-end,
-	double GetKd();						  // where it's important to know what is actually
+	float GetKp();						  // These functions query the pid for interal values.
+	float GetKi();						  //  they were created mainly for the pid front-end,
+	float GetKd();						  // where it's important to know what is actually
 	int GetDirection();					  //
 
   private:
 	
 
-	double dispKp;				// * we'll hold on to the tuning parameters in user-entered 
-	double dispKi;				//   format for display purposes
-	double dispKd;				//
+	float dispKp;				// * we'll hold on to the tuning parameters in user-entered 
+	float dispKi;				//   format for display purposes
+	float dispKd;				//
     
-	double kp;                  // * (P)roportional Tuning Parameter
-    double ki;                  // * (I)ntegral Tuning Parameter
-    double kd;                  // * (D)erivative Tuning Parameter
+	float kp;                  // * (P)roportional Tuning Parameter
+    float ki;                  // * (I)ntegral Tuning Parameter
+    float kd;                  // * (D)erivative Tuning Parameter
 
 	int controllerDirection;
 	int pOn;
 
-	double outputSum, lastInput;
+	float outputSum, lastInput;
 
 	unsigned long SampleTime;
-	double outMin, outMax;
+	float outMin, outMax;
 	bool pOnE;
 
-	inline double angleDifferenceRev( double angle1Rev, double angle2Rev )
+	inline float angleDifferenceRev( float angle1Rev, float angle2Rev )
 	{
-	    double diff = fmod(( angle2Rev - angle1Rev + 0.5 ), 1) - 0.5;
+	    float diff = fmod(( angle2Rev - angle1Rev + 0.5 ), 1) - 0.5;
 	    return diff < -0.5 ? diff + 1 : diff;
 	}
 

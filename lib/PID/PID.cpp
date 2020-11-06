@@ -13,7 +13,7 @@
  *    The parameters specified here are those for for which we can't set up
  *    reliable defaults, so we need to have the user set them.
  ***************************************************************************/
-void PID::init( double Kp, double Ki, double Kd, int sampleTime, int POn, int ControllerDirection)
+void PID::init( float Kp, float Ki, float Kd, int sampleTime, int POn, int ControllerDirection)
 {
     PID::SetOutputLimits(-250, 250);				//default output limit corresponds to
 												//the arduino pwm limits
@@ -31,12 +31,12 @@ void PID::init( double Kp, double Ki, double Kd, int sampleTime, int POn, int Co
  *   pid Output needs to be computed.  returns true when the output is computed,
  *   false when nothing has been done.
  **********************************************************************************/
-double PID::Compute(double inputAngleRev, double setPointAngleRev)
+float PID::Compute(float inputAngleRev, float setPointAngleRev)
 {
 	/*Compute all the working error variables*/
-	double error = this->angleDifferenceRev(setPointAngleRev, inputAngleRev);
+	float error = this->angleDifferenceRev(setPointAngleRev, inputAngleRev);
    
-	double dInput = this->angleDifferenceRev(inputAngleRev, lastInput);
+	float dInput = this->angleDifferenceRev(inputAngleRev, lastInput);
 	outputSum+= (ki * error);
 
 	/*Add Proportional on Measurement, if P_ON_M is specified*/
@@ -46,7 +46,7 @@ double PID::Compute(double inputAngleRev, double setPointAngleRev)
 	else if(outputSum < outMin) outputSum= outMin;
 
 	/*Add Proportional on Error, if P_ON_E is specified*/
-	double output;
+	float output;
 	if(pOnE) output = kp * error;
 	else output = 0;
 
@@ -66,7 +66,7 @@ double PID::Compute(double inputAngleRev, double setPointAngleRev)
  * it's called automatically from the constructor, but tunings can also
  * be adjusted on the fly during normal operation
  ******************************************************************************/
-void PID::SetTunings(double Kp, double Ki, double Kd, int POn)
+void PID::SetTunings(float Kp, float Ki, float Kd, int POn)
 {
    if (Kp<0 || Ki<0 || Kd<0) return;
 
@@ -75,7 +75,7 @@ void PID::SetTunings(double Kp, double Ki, double Kd, int POn)
 
    dispKp = Kp; dispKi = Ki; dispKd = Kd;
 
-   double SampleTimeInSec = ((double)SampleTime)/1000;
+   float SampleTimeInSec = ((float)SampleTime)/1000;
    kp = Kp;
    ki = Ki * SampleTimeInSec;
    kd = Kd / SampleTimeInSec;
@@ -91,7 +91,7 @@ void PID::SetTunings(double Kp, double Ki, double Kd, int POn)
 /* SetTunings(...)*************************************************************
  * Set Tunings using the last-rembered POn setting
  ******************************************************************************/
-void PID::SetTunings(double Kp, double Ki, double Kd){
+void PID::SetTunings(float Kp, float Ki, float Kd){
     SetTunings(Kp, Ki, Kd, pOn); 
 }
 
@@ -102,8 +102,8 @@ void PID::SetSampleTime(int NewSampleTime)
 {
    if (NewSampleTime > 0)
    {
-      double ratio  = (double)NewSampleTime
-                      / (double)SampleTime;
+      float ratio  = (float)NewSampleTime
+                      / (float)SampleTime;
       ki *= ratio;
       kd /= ratio;
       SampleTime = (unsigned long)NewSampleTime;
@@ -118,7 +118,7 @@ void PID::SetSampleTime(int NewSampleTime)
  *  want to clamp it from 0-125.  who knows.  at any rate, that can all be done
  *  here.
  **************************************************************************/
-void PID::SetOutputLimits(double Min, double Max)
+void PID::SetOutputLimits(float Min, float Max)
 {
    if(Min >= Max) return;
    outMin = Min;
@@ -133,7 +133,7 @@ void PID::SetOutputLimits(double Min, double Max)
  *	does all the things that need to happen to ensure a bumpless transfer
  *  from manual to automatic mode.
  ******************************************************************************/
-void PID::init(double input)
+void PID::init(float input)
 {
    outputSum = 0;
    lastInput = input;
@@ -163,8 +163,8 @@ void PID::SetControllerDirection(int Direction)
  * functions query the internal state of the PID.  they're here for display
  * purposes.  this are the functions the PID Front-end uses for example
  ******************************************************************************/
-double PID::GetKp(){ return  dispKp; }
-double PID::GetKi(){ return  dispKi;}
-double PID::GetKd(){ return  dispKd;}
+float PID::GetKp(){ return  dispKp; }
+float PID::GetKi(){ return  dispKi;}
+float PID::GetKd(){ return  dispKd;}
 int PID::GetDirection(){ return controllerDirection;}
 

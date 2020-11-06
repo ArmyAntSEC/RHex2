@@ -23,8 +23,8 @@ private:
 	MotorDriver * driver;
 	HomingEncoder * encoder;
 	PID * pid;
-	double setPointRev;
-	double zeroPositionRev;
+	float setPointRev;
+	float zeroPositionRev;
 	int ID;
 	unsigned long int lastChangeSetpointTime;
 };

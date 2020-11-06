@@ -20,15 +20,15 @@ class LegProcessor
         int encoderPin1;
         int encoderPin2;
         int breakerPin;
-        int legOffset;
+        //int legOffset;
 
         int driverPin1;
         int driverPin2;
         pwm_base * driverPWM;
 
-        double Kp;
-        double Ki;
-        double Kd;
+        double Kp = 500;
+        double Ki = 0;
+        double Kd = 50;
         
 
     public:
@@ -50,7 +50,7 @@ class LegProcessor
         template <int N> void init()
         {
             encoder.init<N>( encoderPin1, encoderPin2, breakerPin );
-            encoder.setPositionOffset( legOffset );
+            //encoder.setPositionOffset( legOffset );
                     
             driver.init( driverPin1, driverPin2, driverPWM );
         

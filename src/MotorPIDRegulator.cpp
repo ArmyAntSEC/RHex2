@@ -30,14 +30,16 @@ boolean MotorPIDRegulator::hasSettled( unsigned long int now)
 
 void MotorPIDRegulator::run(unsigned long int now) {
 	long int currentPositionClicks = this->encoder->read();
+	int posAtLastHome = this->encoder->getPosAtLastHome();
 
 	//And compute the current position in radians
-	double currentPositionRev =  (double)currentPositionClicks/3591.84; //Convert clicks to rotations.
+	float currentPositionRev =  (float)currentPositionClicks/3591.84; //Convert clicks to rotations.
 
-	double PwmValue = this->pid->Compute(currentPositionRev, this->setPointRev );
+	float PwmValue = this->pid->Compute(currentPositionRev, this->setPointRev );
 
 	this->driver->setMotorPWM((int)PwmValue);
 	log(now) << "Step: " << currentPositionClicks << 
 		", CurrPos: " << currentPositionRev << ", SetPt: " << this->setPointRev << 
-		", PWM: " << PwmValue << endl;	
+		", PWM: " << PwmValue << 
+		", Pos At last home: " << posAtLastHome << endl;	
 }

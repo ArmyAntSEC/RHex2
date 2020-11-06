@@ -28,15 +28,15 @@ void TaskScheduler::add(Task* task) {
 void TaskScheduler::run() {
 	//Serial.println ( "Running task scheduler" );
 	unsigned long int now = millis();
-	unsigned long int nowMicro = micros();
+	//unsigned long int nowMicro = micros();
 	Task **tpp = tasks;
 	int runCount = 0;
-	int maxTaskRan = 0;
+	//int maxTaskRan = 0;
 	for (int t = 0; t < numTasks; t++) {
 		Task *tp = *tpp;				
 		if (tp->canRun(now)) {			
 			runCount++;
-			maxTaskRan = t;
+			//maxTaskRan = t;
 			tp->run(now);
 			break;
 		}
@@ -44,11 +44,13 @@ void TaskScheduler::run() {
 	}
 	if ( runCount ) 
 	{
+		/*
 		unsigned long int endTime = micros();
 		log(now) << "Scheduler: Task time [us]: " << endTime - nowMicro <<
 		" Loops since last run: " << loopsSinceLastRun <<
 		" Max task in this run: " << maxTaskRan << 
 		" Total tasks: " << numTasks << endl;
+		*/
 		loopsSinceLastRun = 0;
 	} else  {
 		this->loopsSinceLastRun++;

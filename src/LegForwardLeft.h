@@ -18,15 +18,11 @@ class LegForwardLeft : public LegProcessor {
             encoderPin1 = 2;
             encoderPin2 = 3;
             breakerPin = A0;
-            legOffset = 0;
+            //legOffset = 0;
             
             driverPin1 = 4;
             driverPin2 = 5;   
-            driverPWM = &pwmWrapper;     
-
-            Kp = 500;
-            Ki = 0;
-            Kd = 0;            
+            driverPWM = &pwmWrapper;               
         }
 
         void init()

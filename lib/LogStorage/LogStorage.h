@@ -5,7 +5,7 @@
 
 enum _EndlCode { endl };
 
-#define LOG_BUFFER_LEN 8192
+#define LOG_BUFFER_LEN 8192*4
 
 class LogStorage {
     private:
