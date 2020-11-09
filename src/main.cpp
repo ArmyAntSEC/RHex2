@@ -73,25 +73,12 @@ void loop() {
 			case 's': //Start the main cycle
 				logger(now) << "Starting main left loop" << endl;
 				leftForward.handler.startMainLoop(millis());
-				//rightForward.handler.startMainLoop(millis());
-				break;
-			case 'p': //Start the main cycle
-				logger(now) << "Starting main right loop" << endl;
-				//leftForward.handler.startMainLoop(millis());
 				rightForward.handler.startMainLoop(millis());
 				break;
 			case 'f': //Flush out the logger. Can potentially break the interrupts.
 				logger(now) << "Dumping log" << endl;
 				Log.sendToSerial();
 				break;
-			case 'b': //Break the leg movement
-				legMasterClock.stop();
-				logger(now) << "Master clock stopped" << endl;
-				break;			
-			case 'r': //Restart the main clock
-				legMasterClock.start();
-				logger(now) << "Master clock stopped" << endl;
-				break;			
 			case 'k': //Reset the processor
 				rstc_start_software_reset(RSTC);
 				break;

@@ -19,6 +19,7 @@ public:
 	virtual void init( MotorDriver* _driver, HomingEncoder * _encoder, PID* _pid );
 	void setWantedPositionRev( float _setPointRev, unsigned long int now );	
 	boolean hasSettled( unsigned long int now );
+	void setMaxSpeed( unsigned int maxSpeed );
 private:	
 	MotorDriver * driver;
 	HomingEncoder * encoder;

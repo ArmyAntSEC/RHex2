@@ -28,6 +28,11 @@ boolean MotorPIDRegulator::hasSettled( unsigned long int now)
 	return now - this->lastChangeSetpointTime > 1000;
 }
 
+void MotorPIDRegulator::setMaxSpeed( unsigned int maxSpeed )
+{
+	pid->SetOutputLimits( -maxSpeed, maxSpeed );
+}
+
 void MotorPIDRegulator::run(unsigned long int now) {
 	long int currentPositionClicks = this->encoder->read();
 	int posAtLastHome = this->encoder->getPosAtLastHome();

@@ -20,7 +20,9 @@ class LegProcessor
         int encoderPin1;
         int encoderPin2;
         int breakerPin;
-        //int legOffset;
+        int outputPin;
+
+        int legOffset;
 
         int driverPin1;
         int driverPin2;
@@ -49,8 +51,7 @@ class LegProcessor
 
         template <int N> void init()
         {
-            encoder.init<N>( encoderPin1, encoderPin2, breakerPin );
-            //encoder.setPositionOffset( legOffset );
+            encoder.init<N>( encoderPin1, encoderPin2, breakerPin, outputPin, legOffset );            
                     
             driver.init( driverPin1, driverPin2, driverPWM );
         

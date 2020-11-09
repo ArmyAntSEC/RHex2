@@ -46,11 +46,13 @@ public:
 				state = ALIGNING;
 				log(now) << "Edge found. Changing state to DONE." << endl;										
 			}
-			break;
-		case ALIGNING:					
+			break;					
+		case ALIGNING:	
+			pid->setMaxSpeed( 64 );				
 			pid->run(now);			
 			if ( pid->hasSettled(now) ) {			
 				state = DONE;
+				pid->setMaxSpeed( 255 );
 				log(now) << "Regulator settled. Done." << endl;				
 			}						
 			break;		
