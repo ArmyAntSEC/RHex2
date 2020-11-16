@@ -54,7 +54,12 @@ class PID
 	float GetKi();						  //  they were created mainly for the pid front-end,
 	float GetKd();						  // where it's important to know what is actually
 	int GetDirection();					  //
-
+	
+	float getMaxOutput()
+	{
+		return this->outMax;
+	}
+	
   private:
 	
 

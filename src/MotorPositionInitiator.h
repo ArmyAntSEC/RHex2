@@ -20,7 +20,7 @@ class MotorPositionInitiator: public MotorStateHandlerImpl,
 { 
 public:
 	MotorPositionInitiator ():		
-		state(NEW)		
+		state(NEW), ran(0)		
 	{		
 	}
 
@@ -33,18 +33,24 @@ public:
 	virtual void run(unsigned long int now)
 	{				
 		switch ( state ) {
-		case NEW:
-			log(now) << "State is NEW." << endl;
-			driver->setMotorPWM(-40);
+		case NEW:						
+			ran++;
+
+			if ( ran % 2 ) { //Randomize which direction we turn.
+				driver->setMotorPWM(-40);
+			} else {
+				driver->setMotorPWM(40);
+			}
+
 			log(now) << "Changing state to MOVING" << endl;
 			state = MOVING;		
 			break;		
 		case MOVING:				
 			if ( encoder->isHomed() ) {
-				driver->setMotorPWM(0);				
+				//driver->setMotorPWM(0);				
 				pid->setWantedPositionRev(0, now);
 				state = ALIGNING;
-				log(now) << "Edge found. Changing state to DONE." << endl;										
+				log(now) << "Edge found. Changing state to ALIGNING." << endl;										
 			}
 			break;					
 		case ALIGNING:	
@@ -53,6 +59,7 @@ public:
 			if ( pid->hasSettled(now) ) {			
 				state = DONE;
 				pid->setMaxSpeed( 255 );
+				driver->setMotorPWM(0);
 				log(now) << "Regulator settled. Done." << endl;				
 			}						
 			break;		
@@ -67,7 +74,8 @@ public:
 
 private:
 	enum State { NEW, MOVING, ALIGNING, DONE };
-	State state;		
+	State state;	
+	unsigned int ran;	
 };
 
 

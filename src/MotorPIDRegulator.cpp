@@ -25,12 +25,12 @@ void MotorPIDRegulator::setWantedPositionRev( float _setPointRev, unsigned long 
 
 boolean MotorPIDRegulator::hasSettled( unsigned long int now)
 {
-	return now - this->lastChangeSetpointTime > 1000;
+	return now - this->lastChangeSetpointTime > 2000;
 }
 
 void MotorPIDRegulator::setMaxSpeed( unsigned int maxSpeed )
 {
-	pid->SetOutputLimits( -maxSpeed, maxSpeed );
+	this->pid->SetOutputLimits( -(int)maxSpeed, maxSpeed );
 }
 
 void MotorPIDRegulator::run(unsigned long int now) {
@@ -40,11 +40,19 @@ void MotorPIDRegulator::run(unsigned long int now) {
 	//And compute the current position in radians
 	float currentPositionRev =  (float)currentPositionClicks/3591.84; //Convert clicks to rotations.
 
-	float PwmValue = this->pid->Compute(currentPositionRev, this->setPointRev );
+	float PwmValueTrue = this->pid->Compute(currentPositionRev, this->setPointRev );
+	
+	//Give an extra kick if we are below the min threshold
+	float PwmValueAbs = fabs(PwmValueTrue);
+	float PwmValue = PwmValueTrue;
+	if ( PwmValueAbs > 10 && PwmValueAbs < 30 ) {
+		PwmValue = 30*PwmValue/PwmValueAbs;
+	}
 
 	this->driver->setMotorPWM((int)PwmValue);
 	log(now) << "Step: " << currentPositionClicks << 
 		", CurrPos: " << currentPositionRev << ", SetPt: " << this->setPointRev << 
 		", PWM: " << PwmValue << 
-		", Pos At last home: " << posAtLastHome << endl;	
+		", Pos At last home: " << posAtLastHome << 
+		", True PWM: " << PwmValueTrue << endl;	
 }

@@ -17,7 +17,7 @@ class LegForwardRight : public LegProcessor {
             encoderPin2 = 11;
             breakerPin = 13;
             outputPin = A1;
-            legOffset = 400;
+            legOffset = 400+3592/2;
             
             driverPin1 = 8;
             driverPin2 = 7;  

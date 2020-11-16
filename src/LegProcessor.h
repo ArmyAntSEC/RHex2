@@ -28,7 +28,7 @@ class LegProcessor
         int driverPin2;
         pwm_base * driverPWM;
 
-        double Kp = 500;
+        double Kp = 1000;
         double Ki = 0;
         double Kd = 50;
         

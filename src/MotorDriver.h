@@ -34,11 +34,7 @@ public:
 
 	void setMotorPWM( int motorPWM )
 	{		
-		//Stop drivers if power is slow.
-		if ( abs(motorPWM) < 20 ) {
-			motorPWM = 0;
-		}
-
+		
 		if ( motorPWM <= 0 ) {
 			digitalWrite ( this->driverPinTwo, LOW);
 			digitalWrite ( this->driverPinOne, HIGH);			

@@ -43,6 +43,9 @@ class LegPacingMasterClock: public RecurringTask, public Loggable
             unsigned long int timeDelta = now - lastNow;
             lastNow = now;
             angleRev += rotationsPerMinute * timeDelta/1000.0/60.0;
+            if ( angleRev > 1 ) { //Just take one step at the time.
+                this->stop();
+            }
             angleRev = fmod( angleRev, 1 );
             log(now) << " AngleRev: " << angleRev << endl;
         }
