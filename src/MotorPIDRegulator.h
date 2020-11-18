@@ -15,8 +15,8 @@
 
 class MotorPIDRegulator: public Loggable {
 public:	
-	virtual void run(unsigned long int now);
-	virtual void init( MotorDriver* _driver, HomingEncoder * _encoder, PID* _pid );
+	void run(unsigned long int now);
+	void init( MotorDriver* _driver, HomingEncoder * _encoder, PID* _pid );
 	void setWantedPositionRev( float _setPointRev, unsigned long int now );	
 	boolean hasSettled( unsigned long int now );
 	void setMaxSpeed( unsigned int maxSpeed );
@@ -24,9 +24,7 @@ private:
 	MotorDriver * driver;
 	HomingEncoder * encoder;
 	PID * pid;
-	float setPointRev;
-	float zeroPositionRev;
-	int ID;
+	float setPointRev;	
 	unsigned long int lastChangeSetpointTime;
 };
 

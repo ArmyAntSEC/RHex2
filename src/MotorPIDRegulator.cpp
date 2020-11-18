@@ -33,7 +33,8 @@ void MotorPIDRegulator::setMaxSpeed( unsigned int maxSpeed )
 	this->pid->SetOutputLimits( -(int)maxSpeed, maxSpeed );
 }
 
-void MotorPIDRegulator::run(unsigned long int now) {
+void MotorPIDRegulator::run(unsigned long int now) 
+{
 	long int currentPositionClicks = this->encoder->read();
 	int posAtLastHome = this->encoder->getPosAtLastHome();
 

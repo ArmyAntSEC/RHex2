@@ -12,9 +12,9 @@ class MotorPositionScheduler: public MotorStateHandlerImpl // @suppress("Class h
 {
     public:
         virtual void init( MotorStateHandler * _handler, MotorDriver * _driver, 
-            HomingEncoder * _encoder, MotorPIDRegulator * _pid, LegPacingMasterClock * _masterClock )
+            HomingEncoder * _encoder, MotorRegulator * _regulator, LegPacingMasterClock * _masterClock )
         {
-            MotorStateHandlerImpl::init( _handler, _driver, _encoder, _pid );
+            MotorStateHandlerImpl::init( _handler, _driver, _encoder, _regulator );
             masterClock = _masterClock;
         }
 
@@ -22,8 +22,8 @@ class MotorPositionScheduler: public MotorStateHandlerImpl // @suppress("Class h
         {				
             double masterAngleRev = masterClock->getAngleRev();            
             double angleRev = computeActualLegAngleRev ( masterAngleRev, 1 );
-            pid->setWantedPositionRev( angleRev, now );	
-            pid->run(now);
+            regulator->setWantedPositionRev( angleRev, now );	
+            regulator->run(now);
             //Log << "Scheduler: " << "MasterAngle: " << masterAngleRev << " TargetAngle: " << angleRev << endl;
         }
 

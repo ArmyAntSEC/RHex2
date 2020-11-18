@@ -10,7 +10,7 @@
 
 #include "MotorDriver.h"
 #include "HomingEncoder.h"
-#include "MotorPIDRegulator.h"
+#include "MotorRegulator.h"
 
 class MotorStateHandler;
 
@@ -19,12 +19,12 @@ public:
 	virtual void run(unsigned long int now) = 0;
 	
 	virtual void init( MotorStateHandler * _handler, MotorDriver * _driver, 
-		HomingEncoder * _encoder, MotorPIDRegulator * _pid )
+		HomingEncoder * _encoder, MotorRegulator * _regulator )
 	{
 		handler = _handler;
 		driver = _driver;
 		encoder = _encoder;
-		pid = _pid;
+		regulator = _regulator;
 	}
 
 	virtual void restart( unsigned long int _now )
@@ -34,7 +34,7 @@ protected:
 	MotorStateHandler* handler;
 	MotorDriver* driver;
 	HomingEncoder* encoder;
-	MotorPIDRegulator* pid;
+	MotorRegulator* regulator;
 };
 
 #include "MotorStateHandler.h"

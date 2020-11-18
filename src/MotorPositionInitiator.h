@@ -10,7 +10,6 @@
 
 #include "MotorStateHandlerImpl.h"
 #include "HomingEncoder.h"
-#include "MotorPIDRegulator.h"
 
 #include <Arduino.h>
 #include <Loggable.h>
@@ -37,9 +36,9 @@ public:
 			ran++;
 
 			if ( ran % 2 ) { //Randomize which direction we turn.
-				driver->setMotorPWM(-40);
+				driver->setMotorPWM(-96);
 			} else {
-				driver->setMotorPWM(40);
+				driver->setMotorPWM(96);
 			}
 
 			log(now) << "Changing state to MOVING" << endl;
@@ -48,17 +47,17 @@ public:
 		case MOVING:				
 			if ( encoder->isHomed() ) {
 				//driver->setMotorPWM(0);				
-				pid->setWantedPositionRev(0, now);
+				regulator->setWantedPositionRev(0, now);
 				state = ALIGNING;
 				log(now) << "Edge found. Changing state to ALIGNING." << endl;										
 			}
 			break;					
 		case ALIGNING:	
-			pid->setMaxSpeed( 64 );				
-			pid->run(now);			
-			if ( pid->hasSettled(now) ) {			
+			regulator->setMaxSpeed( 64 );				
+			regulator->run(now);			
+			if ( regulator->hasSettled(now) ) {			
 				state = DONE;
-				pid->setMaxSpeed( 255 );
+				regulator->setMaxSpeed( 255 );
 				driver->setMotorPWM(0);
 				log(now) << "Regulator settled. Done." << endl;				
 			}						
