@@ -8,7 +8,8 @@
 
 #include "LogStorage.h"
 
-class MotorPositionScheduler: public MotorStateHandlerImpl // @suppress("Class has a virtual method and non-virtual destructor")
+class MotorPositionScheduler: public MotorStateHandlerImpl,
+    public Loggable // @suppress("Class has a virtual method and non-virtual destructor")
 {
     public:
         virtual void init( MotorStateHandler * _handler, MotorDriver * _driver, 
@@ -18,18 +19,19 @@ class MotorPositionScheduler: public MotorStateHandlerImpl // @suppress("Class h
             masterClock = _masterClock;
         }
 
+        virtual void restart( unsigned long int _now )
+        {
+            this->regulator->setMaxSpeed(255);
+        }
+        
         virtual void run(unsigned long int now)
         {				
             double masterAngleRev = masterClock->getAngleRev();            
             double angleRev = computeActualLegAngleRev ( masterAngleRev, 1 );
             regulator->setWantedPositionRev( angleRev, now );	
             regulator->run(now);
-            //Log << "Scheduler: " << "MasterAngle: " << masterAngleRev << " TargetAngle: " << angleRev << endl;
-        }
-
-        virtual void restart( unsigned long int _now )
-        {
-            masterClock->restart( _now );
+            log(now) << "Master Angle: " << masterAngleRev << 
+            ", Actual wanted angle: " << angleRev << endl;
         }
         
     private:    

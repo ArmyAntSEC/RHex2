@@ -9,7 +9,7 @@ class MotorRegulator
     public:	
         virtual void run(unsigned long int now) = 0;
         
-        void init( MotorDriver* _driver, HomingEncoder * _encoder )
+        virtual void init( MotorDriver* _driver, HomingEncoder * _encoder )
         {
             driver = _driver;
             encoder = _encoder;	
@@ -23,7 +23,7 @@ class MotorRegulator
         
         virtual boolean hasSettled( unsigned long int now ) = 0;	
 
-        void setMaxSpeed( unsigned int _maxSpeed ) { maxSpeed = _maxSpeed; }
+        virtual void setMaxSpeed( unsigned int _maxSpeed ) = 0;
 
         float getCurrentPosRev()
         {
@@ -35,8 +35,7 @@ class MotorRegulator
     protected:	
         MotorDriver * driver;
         HomingEncoder * encoder;	
-        float setPointRev;	
-        int maxSpeed;
+        float setPointRev;	        
 
     protected:
         inline float angleDifferenceRev( float angle1Rev, float angle2Rev )

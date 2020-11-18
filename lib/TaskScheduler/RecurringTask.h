@@ -19,7 +19,7 @@ public:
     void init( unsigned long int now );
     inline void start() { this->isRunning = true; }
     inline void stop() { this->isRunning = false; }
-    inline unsigned long int getRate() { return rate; }
+    inline unsigned long int getRate() { return rate; }    
 private:
     unsigned long int runTime;
     unsigned int rate;

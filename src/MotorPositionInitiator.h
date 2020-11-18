@@ -53,11 +53,11 @@ public:
 			}
 			break;					
 		case ALIGNING:	
-			regulator->setMaxSpeed( 64 );				
+			regulator->setMaxSpeed( 96 );				
 			regulator->run(now);			
 			if ( regulator->hasSettled(now) ) {			
 				state = DONE;
-				regulator->setMaxSpeed( 255 );
+				//regulator->setMaxSpeed( 255 );
 				driver->setMotorPWM(0);
 				log(now) << "Regulator settled. Done." << endl;				
 			}						

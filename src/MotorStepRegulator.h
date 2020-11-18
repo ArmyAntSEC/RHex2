@@ -16,7 +16,7 @@ class MotorStepRegulator: public MotorRegulator, public Loggable {
 		virtual void run(unsigned long int now)
 		{
 			float currentPositionRev = this->getCurrentPosRev();
-			float currentPositionClicks = this->encoder->read();
+			//float currentPositionClicks = this->encoder->read();
 
 			//Now set the motor power
 			float angleDiffRev = this->angleDifferenceRev(this->setPointRev, currentPositionRev );
@@ -27,8 +27,8 @@ class MotorStepRegulator: public MotorRegulator, public Loggable {
 			float angleDiffDir = (int)(angleDiffRev/angleDiffRevAbs);
 
 			int PwmValue = 0;
-			if ( angleDiffRevAbs > 0.25 ) {
-				PwmValue = angleDiffDir * 96;
+			if ( angleDiffRevAbs > 0.1 ) {
+				PwmValue = angleDiffDir * this->maxSpeed;
 				settled = false;
 			} else if (angleDiffRevAbs < 0.01 )  {
 				PwmValue = 0;
@@ -41,16 +41,21 @@ class MotorStepRegulator: public MotorRegulator, public Loggable {
 			this->driver->setMotorPWM((int)PwmValue);
 
 
-			log(now) << "Step: " << currentPositionClicks << 
+			log(now) << "AngleDiffRev: " << angleDiffRev << 
 				", CurrPos: " << currentPositionRev << ", SetPt: " << this->setPointRev << 
 				", PWM: " << PwmValue << 
 				", Pos At last home: " << posAtLastHome << endl;	
 		}
 
 		virtual boolean hasSettled( unsigned long int now ) { return settled; }	
-
+		virtual void setMaxSpeed( unsigned int _maxSpeed )	
+	 	{ 
+			maxSpeed = _maxSpeed; 
+		}
+		
 	private:	 
 		boolean settled = false;
+		unsigned int maxSpeed;
 };
 
 #endif /* MOTORPIDREGULATOR_H_ */

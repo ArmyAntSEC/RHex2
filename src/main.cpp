@@ -44,7 +44,6 @@ void setup() {
 	rightForward.init();		
 	sched.add( &(rightForward.handler) );
 
-	legMasterClock.init( now, LEG_ROTATIONS_PER_MINUTE );
 	legMasterClock.setID( "MasterClk", "0");
 	sched.add( &legMasterClock );
 	
@@ -67,24 +66,24 @@ void loop() {
 		switch ( input ) {
 			case 'i': //Init the legs
 				logger(now) << "Starting the initiator" << endl;
-				leftForward.handler.startInitiator(millis());
-				rightForward.handler.startInitiator(millis());
+				leftForward.handler.startInitiator(now);
+				rightForward.handler.startInitiator(now);				
 				break;
 			case 'j': //Init the legs
 				logger(now) << "Starting the initiator" << endl;
-				leftForward.handler.startInitiator(millis());
-				//rightForward.handler.startInitiator(millis());
+				leftForward.handler.startInitiator(now);
+				//rightForward.handler.startInitiator(now);
 				break;
 			case 'k': //Init the legs
 				logger(now) << "Starting the initiator" << endl;
-				//leftForward.handler.startInitiator(millis());
-				rightForward.handler.startInitiator(millis());
+				//leftForward.handler.startInitiator(now);
+				rightForward.handler.startInitiator(now);
 				break;
 			case 's': //Start the main cycle
 				logger(now) << "Starting main left loop" << endl;
-				leftForward.handler.startMainLoop(millis());
-				rightForward.handler.startMainLoop(millis());
-				legMasterClock.start();
+				leftForward.handler.startMainLoop(now);
+				//rightForward.handler.startMainLoop(now);
+				legMasterClock.init( now, LEG_ROTATIONS_PER_MINUTE );
 				break;
 			case 'f': //Flush out the logger. Can potentially break the interrupts.
 				logger(now) << "Dumping log" << endl;

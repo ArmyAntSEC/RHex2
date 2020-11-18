@@ -15,10 +15,10 @@ class LegPacingMasterClock: public RecurringTask, public Loggable
         
         void init( unsigned long int now, double _rotationsPerMinute )
         {
+            RecurringTask::init( now );            
             angleRev = 0;
             lastNow = now;
-            rotationsPerMinute = _rotationsPerMinute;
-            this->start();            
+            rotationsPerMinute = _rotationsPerMinute;                       
         }
 
         void restart( unsigned long int _now )

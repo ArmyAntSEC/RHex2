@@ -33,14 +33,14 @@ public:
 
 	void startInitiator( unsigned long int _now )
 	{		
-		initiator->restart( _now );
 		currentState = initiator;
+		currentState->restart(_now);
 	}
 
 	void startMainLoop( unsigned long int _now ) 
 	{	
-		mainLoop->restart( _now );
 		currentState = mainLoop;
+		currentState->restart(_now);
 	}
 
 	void init(MotorStateHandlerImpl* _initiator, MotorStateHandlerImpl* _mainLoop) {

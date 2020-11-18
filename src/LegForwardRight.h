@@ -28,7 +28,9 @@ class LegForwardRight : public LegProcessor {
         {
             LegProcessor::init<2>();
             this->initiator.setID("Initiator", "RF" );
-            this->regulator.setID("Regulator", "RF");
+            this->stepRegulator.setID("StepRegulator", "RF");
+            this->pidRegulator.setID("PidRegulator", "RF");            
+            this->scheduler.setID("Scheduler", "RF" );
         }
         
 };    

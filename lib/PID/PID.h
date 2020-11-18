@@ -1,60 +1,125 @@
 #ifndef PID_v1_h
 #define PID_v1_h
-#define LIBRARY_VERSION	1.2.1
 
 #include <math.h>
 
+//Constants used in some of the functions below
+#define AUTOMATIC	1
+#define MANUAL	0
+#define DIRECT  0
+#define REVERSE  1
+#define P_ON_M 0
+#define P_ON_E 1
+
 class PID
 {
-
-
   public:
+	void setup(float Kp, float Ki, float Kd, int sampleTime, int POn, int ControllerDirection)
+	{
+		PID::SetOutputLimits(-250, 250);			
+		SampleTime = sampleTime;
 
-  //Constants used in some of the functions below
-  #define AUTOMATIC	1
-  #define MANUAL	0
-  #define DIRECT  0
-  #define REVERSE  1
-  #define P_ON_M 0
-  #define P_ON_E 1
-
-  	//commonly used functions **************************************************************************
-    // De-facto constructor.  Initial tuning parameters are set here as well as sample time.
-	void init(float Kp, float Ki, float Kd, int sampleTime, int POn, int ControllerDirection);  
-
-    float Compute(float inputAngleRev, float setPointAngleRev); // Does a computation. Should be called at the interval
-    											// defined when creating the object.
-
-    void SetOutputLimits(float Min, float Max); // * clamps the output to a specific range. 0-255 by default, but
-										                      //   it's likely the user will want to change this depending on
-										                      //   the application
+		PID::SetControllerDirection(ControllerDirection);
+		PID::SetTunings(Kp, Ki, Kd, POn);
+	}
+  
+    float Compute(float inputAngleRev, float setPointAngleRev)
+	{
+		/*Compute all the working error variables*/
+		float error = this->angleDifferenceRev(setPointAngleRev, inputAngleRev);
 	
+		float dInput = this->angleDifferenceRev(inputAngleRev, lastInput);
+		outputSum+= (ki * error);
 
-    void init(float input);
+		/*Add Proportional on Measurement, if P_ON_M is specified*/
+		if(!pOnE) outputSum-= kp * dInput;
 
-  //available but not commonly used functions ********************************************************
-    void SetTunings(float, float,       // * While most users will set the tunings once in the 
-                    float);         	    //   constructor, this function gives the user the option
-                                          //   of changing tunings during runtime for Adaptive control
-    void SetTunings(float, float,       // * overload for specifying proportional mode
-                    float, int);         	  
+		if(outputSum > outMax) outputSum= outMax;
+		else if(outputSum < outMin) outputSum= outMin;
 
-	void SetControllerDirection(int);	  // * Sets the Direction, or "Action" of the controller. DIRECT
-										  //   means the output will increase when error is positive. REVERSE
-										  //   means the opposite.  it's very unlikely that this will be needed
-										  //   once it is set in the constructor.
-    void SetSampleTime(int);              // * sets the frequency, in Milliseconds, with which 
-                                          //   the PID calculation is performed.  default is 100
-										  
-										  
+		/*Add Proportional on Error, if P_ON_E is specified*/
+		float output;
+		if(pOnE) output = kp * error;
+		else output = 0;
 
+		/*Compute Rest of PID Output*/
+		output += outputSum - kd * dInput;
 
-  //Display functions ****************************************************************
-	float GetKp();						  // These functions query the pid for interal values.
-	float GetKi();						  //  they were created mainly for the pid front-end,
-	float GetKd();						  // where it's important to know what is actually
-	int GetDirection();					  //
-	
+		if(output > outMax) output = outMax;
+		else if(output < outMin) output = outMin;
+
+		/*Remember some variables for next time*/
+		lastInput = inputAngleRev;
+		return output;
+	}
+
+    void SetOutputLimits(float Min, float Max)
+	{
+		if(Min >= Max) return;
+		outMin = Min;
+		outMax = Max;
+
+		if(outputSum > outMax) outputSum= outMax;
+		else if(outputSum < outMin) outputSum= outMin;
+	}
+
+    void setup(float input)
+	{
+		outputSum = 0;
+		lastInput = input;
+		if(outputSum > outMax) outputSum = outMax;
+		else if(outputSum < outMin) outputSum = outMin;
+	}
+
+    void SetTunings(float Kp, float Ki, float Kd, int POn)
+	{
+		if (Kp<0 || Ki<0 || Kd<0) return;
+
+		pOn = POn;
+		pOnE = POn == P_ON_E;
+
+		dispKp = Kp; dispKi = Ki; dispKd = Kd;
+
+		float SampleTimeInSec = ((float)SampleTime)/1000;
+		kp = Kp;
+		ki = Ki * SampleTimeInSec;
+		kd = Kd / SampleTimeInSec;
+
+		if(controllerDirection ==REVERSE)
+		{
+			kp = (0 - kp);
+			ki = (0 - ki);
+			kd = (0 - kd);
+		}
+	}
+
+    void SetTunings(float Kp, float Ki, float Kd)
+	{
+		SetTunings(Kp, Ki, Kd, pOn);
+	}         	  
+
+	void SetControllerDirection(int Direction)
+	{
+		if(Direction != controllerDirection)
+		{
+			kp = (0 - kp);
+			ki = (0 - ki);
+			kd = (0 - kd);
+		}
+		controllerDirection = Direction;
+	}
+
+    void SetSampleTime(int NewSampleTime)
+	{
+		if (NewSampleTime > 0)
+		{
+			float ratio  = (float)NewSampleTime / (float)SampleTime;
+			ki *= ratio;
+			kd /= ratio;
+			SampleTime = (unsigned long)NewSampleTime;
+		}
+	}
+
 	float getMaxOutput()
 	{
 		return this->outMax;
@@ -62,7 +127,6 @@ class PID
 	
   private:
 	
-
 	float dispKp;				// * we'll hold on to the tuning parameters in user-entered 
 	float dispKi;				//   format for display purposes
 	float dispKd;				//

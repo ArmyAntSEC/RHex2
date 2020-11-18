@@ -10,6 +10,7 @@ using namespace arduino_due::pwm_lib;
 #include "MotorPositionScheduler.h"
 #include "LegPacingMasterClock.h"
 #include "MotorStepRegulator.h"
+#include "MotorPIDRegulator.h"
 
 class LegProcessor
 {
@@ -37,7 +38,8 @@ class LegProcessor
         HomingEncoder encoder;
         MotorDriver driver;
         MotorPositionInitiator initiator;
-        MotorStepRegulator regulator;        
+        MotorStepRegulator stepRegulator;  
+        MotorPIDRegulator  pidRegulator;   
         MotorStateHandler handler;
         MotorPositionScheduler scheduler;
         
@@ -54,10 +56,12 @@ class LegProcessor
                     
             driver.init( driverPin1, driverPin2, driverPWM );
         
-            regulator.init( &driver, &encoder );
-            initiator.init ( &handler, &driver, &encoder, &regulator );
+            stepRegulator.init( &driver, &encoder );
+            initiator.init ( &handler, &driver, &encoder, &stepRegulator );
 
-            scheduler.init ( &handler, &driver, &encoder, &regulator, masterClock );
+            pidRegulator.init( &driver, &encoder );
+            scheduler.init ( &handler, &driver, &encoder, &pidRegulator, masterClock );
+            
             handler.init( &initiator, &scheduler );                        
         }        
 };
