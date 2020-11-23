@@ -18,12 +18,14 @@ class LegPacingMasterClock: public RecurringTask, public Loggable
             RecurringTask::init( now );            
             angleRev = 0;
             lastNow = now;
+            revolutions = 0;
             rotationsPerMinute = _rotationsPerMinute;                       
         }
 
         void restart( unsigned long int _now )
         {
             angleRev = 0;
+            revolutions = 0;
             lastNow = _now;
         }
 
@@ -43,9 +45,14 @@ class LegPacingMasterClock: public RecurringTask, public Loggable
             unsigned long int timeDelta = now - lastNow;
             lastNow = now;
             angleRev += rotationsPerMinute * timeDelta/1000.0/60.0;
-            if ( angleRev > 1 ) { //Just take one step at the time.
+            if ( angleRev > 1 ) {
+                revolutions++;
+            }
+
+            if ( revolutions > 3 ) { //Just take three steps at the time.
                 this->stop();
             }
+            
             angleRev = fmod( angleRev, 1 );
             log(now) << " AngleRev: " << angleRev << endl;
         }
@@ -54,6 +61,7 @@ class LegPacingMasterClock: public RecurringTask, public Loggable
         double angleRev;
         unsigned long int lastNow;
         double rotationsPerMinute;
+        int revolutions;
 };
 
 #endif

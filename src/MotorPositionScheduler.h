@@ -43,7 +43,11 @@ class MotorPositionScheduler: public MotorStateHandlerImpl,
         
 
         double computeActualLegAngleRev( double masterAngleRev, double contactFactor )
-        {
+        {            
+            if ( masterAngleRev > 1 )
+                masterAngleRev = masterAngleRev - 1;
+
+            //Give an offset to the masterAngleRev to make sure 
             double time_sp = time_s * contactFactor;
             double phi_r = 0;
             if ( masterAngleRev < time_sp ) 
@@ -56,6 +60,7 @@ class MotorPositionScheduler: public MotorStateHandlerImpl,
                 phi_r = phi_o + phi_s + phi_u / time_u * (masterAngleRev - time_sp);
                 //Log << "Scheduler (Air): " << "MaterAngle: " << masterAngleRev << " Phi_r: " << phi_r << endl;
             }
+            
             return phi_r;  
         }
 

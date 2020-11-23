@@ -9,7 +9,7 @@
 #include "LegPacingMasterClock.h"
 
 #define SAMPLE_TIME 100
-#define LEG_ROTATIONS_PER_MINUTE 60
+#define LEG_ROTATIONS_PER_MINUTE 30
 
 class L : public Loggable
 {
@@ -82,7 +82,7 @@ void loop() {
 			case 's': //Start the main cycle
 				logger(now) << "Starting main left loop" << endl;
 				leftForward.handler.startMainLoop(now);
-				//rightForward.handler.startMainLoop(now);
+				rightForward.handler.startMainLoop(now);
 				legMasterClock.init( now, LEG_ROTATIONS_PER_MINUTE );
 				break;
 			case 'f': //Flush out the logger. Can potentially break the interrupts.

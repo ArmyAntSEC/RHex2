@@ -20,7 +20,7 @@ class MotorPIDRegulator: public MotorRegulator, public Loggable, protected PID {
 		virtual void init( MotorDriver* _driver, HomingEncoder * _encoder )
 		{
 			MotorRegulator::init(_driver,_encoder);
-			PID::setup( 500, 0, 50, 100, P_ON_M, DIRECT );
+			PID::setup( 500, 0, 0, 100, P_ON_M, DIRECT );
 		}
 		
 		virtual void run(unsigned long int now)
@@ -30,22 +30,23 @@ class MotorPIDRegulator: public MotorRegulator, public Loggable, protected PID {
 
 			//And compute the current position in radians
 			float currentPositionRev =  (float)currentPositionClicks/3591.84; //Convert clicks to rotations.
-
-			float PwmValueTrue = PID::Compute(currentPositionRev, this->setPointRev );
+			float error = this->MotorRegulator::angleDifferenceRev( this->setPointRev, currentPositionRev );
 			
-			//Give an extra kick if we are below the min threshold
-			float PwmValueAbs = fabs(PwmValueTrue);
-			float PwmValue = PwmValueTrue;
-			if ( PwmValueAbs > 10 && PwmValueAbs < 30 ) {
-				PwmValue = 30*PwmValue/PwmValueAbs;
-			}
+			//float PwmValue = PID::Compute(currentPositionRev, this->setPointRev );
+			//DIY PID regulator
+			float deltaError = error - lastError;			
+			float PwmValue = Kp*error + Kd*deltaError;
+			lastError = error;
 
-			this->driver->setMotorPWM((int)PwmValue);
+			if (PwmValue > 255) PwmValue = 255;
+			if (PwmValue < -255) PwmValue = -255;
+
+			this->driver->setMotorPWM((int)PwmValue);			
+
 			log(now) << "Step: " << currentPositionClicks << 
 				", CurrPos: " << currentPositionRev << ", SetPt: " << this->setPointRev << 
-				", PWM: " << PwmValue << 
-				", Pos At last home: " << posAtLastHome << 
-				", True PWM: " << PwmValueTrue << endl;	
+				", Error: " << error << ", PWM: " << PwmValue <<
+				", Pos At last home: " << posAtLastHome << endl;	
 		}
 
 		virtual void setMaxSpeed( unsigned int maxSpeed )
@@ -61,6 +62,10 @@ class MotorPIDRegulator: public MotorRegulator, public Loggable, protected PID {
 
 	private:	
 		unsigned long int lastChangeSetpointTime;
+		const float Kp = 1500;
+		const float Kd = 200;
+		float lastError = 0;
+
 };
 
 #endif /* MOTORPIDREGULATOR_H_ */
