@@ -13,10 +13,12 @@ class MotorPositionScheduler: public MotorStateHandlerImpl,
 {
     public:
         virtual void init( MotorStateHandler * _handler, MotorDriver * _driver, 
-            HomingEncoder * _encoder, MotorRegulator * _regulator, LegPacingMasterClock * _masterClock )
+            HomingEncoder * _encoder, MotorRegulator * _regulator, 
+            LegPacingMasterClock * _masterClock, float _contactFactor )
         {
             MotorStateHandlerImpl::init( _handler, _driver, _encoder, _regulator );
             masterClock = _masterClock;
+            contactFactor = _contactFactor;
         }
 
         virtual void restart( unsigned long int _now )
@@ -26,8 +28,8 @@ class MotorPositionScheduler: public MotorStateHandlerImpl,
         
         virtual void run(unsigned long int now)
         {				
-            double masterAngleRev = masterClock->getAngleRev();            
-            double angleRev = computeActualLegAngleRev ( masterAngleRev, 1 );
+            float masterAngleRev = masterClock->getAngleRev();            
+            float angleRev = computeActualLegAngleRev ( masterAngleRev, contactFactor );
             regulator->setWantedPositionRev( angleRev, now );	
             regulator->run(now);
             log(now) << "Master Angle: " << masterAngleRev << 
@@ -37,26 +39,28 @@ class MotorPositionScheduler: public MotorStateHandlerImpl,
     private:    
         LegPacingMasterClock * masterClock;
 
-        double time_s = 0.5;                 
-        double phi_s = 0.25;
-        double phi_o = 0;
+        float time_s = 0.5;                 
+        float phi_s = 0.25;
+        float phi_o = 0;
+
+        float contactFactor = 1;
         
 
-        double computeActualLegAngleRev( double masterAngleRev, double contactFactor )
+        float computeActualLegAngleRev( float masterAngleRev, float contactFactor )
         {            
             if ( masterAngleRev > 1 )
                 masterAngleRev = masterAngleRev - 1;
 
             //Give an offset to the masterAngleRev to make sure 
-            double time_sp = time_s * contactFactor;
-            double phi_r = 0;
+            float time_sp = time_s * contactFactor;
+            float phi_r = 0;
             if ( masterAngleRev < time_sp ) 
             {
                 phi_r = phi_o + phi_s / time_sp * masterAngleRev;
                 //Log << "Scheduler (Contact): " << "MaterAngle: " << masterAngleRev << " Phi_r: " << phi_r << endl;
             } else {
-                double phi_u = 1 - phi_s;
-                double time_u = 1 - time_sp;
+                float phi_u = 1 - phi_s;
+                float time_u = 1 - time_sp;
                 phi_r = phi_o + phi_s + phi_u / time_u * (masterAngleRev - time_sp);
                 //Log << "Scheduler (Air): " << "MaterAngle: " << masterAngleRev << " Phi_r: " << phi_r << endl;
             }

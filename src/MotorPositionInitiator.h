@@ -19,12 +19,16 @@ class MotorPositionInitiator: public MotorStateHandlerImpl,
 { 
 public:
 	MotorPositionInitiator ():		
-		state(NEW), ran(0)		
+		state(NEW), ran(0), wantedPosition(0)		
 	{		
+	}
+	virtual void setWantedPosition(float _wantedPosition)
+	{
+		wantedPosition = _wantedPosition;
 	}
 
 	virtual void restart( unsigned long int _now )
-	{
+	{				
 		this->state = NEW;
 		this->encoder->unHome();
 	}
@@ -47,7 +51,7 @@ public:
 		case MOVING:				
 			if ( encoder->isHomed() ) {
 				//driver->setMotorPWM(0);				
-				regulator->setWantedPositionRev(0, now);
+				regulator->setWantedPositionRev(wantedPosition, now);
 				state = ALIGNING;
 				log(now) << "Edge found. Changing state to ALIGNING." << endl;										
 			}
@@ -75,6 +79,7 @@ private:
 	enum State { NEW, MOVING, ALIGNING, DONE };
 	State state;	
 	unsigned int ran;	
+	float wantedPosition;
 };
 
 

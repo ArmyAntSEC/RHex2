@@ -24,6 +24,7 @@ class LegProcessor
         int outputPin;
 
         int legOffset;
+        float contactFactor;
 
         int driverPin1;
         int driverPin2;
@@ -60,7 +61,8 @@ class LegProcessor
             initiator.init ( &handler, &driver, &encoder, &stepRegulator );
 
             pidRegulator.init( &driver, &encoder );
-            scheduler.init ( &handler, &driver, &encoder, &pidRegulator, masterClock );
+            scheduler.init ( &handler, &driver, &encoder, &pidRegulator, 
+                masterClock, contactFactor );
             
             handler.init( &initiator, &scheduler );                        
         }        

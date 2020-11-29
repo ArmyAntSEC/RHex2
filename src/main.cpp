@@ -66,20 +66,21 @@ void loop() {
 		switch ( input ) {
 			case 'i': //Init the legs
 				logger(now) << "Starting the initiator" << endl;
+				leftForward.initiator.setWantedPosition(0);
+				rightForward.initiator.setWantedPosition(0);
+
 				leftForward.handler.startInitiator(now);
 				rightForward.handler.startInitiator(now);				
 				break;
-			case 'j': //Init the legs
-				logger(now) << "Starting the initiator" << endl;
+			case 's': //Set the robot legs to sleep position
+				logger(now) << "Setting legs into sleep mode" << endl;
+				leftForward.initiator.setWantedPosition(0.42);
+				rightForward.initiator.setWantedPosition(0.42);
 				leftForward.handler.startInitiator(now);
-				//rightForward.handler.startInitiator(now);
+				rightForward.handler.startInitiator(now);				
 				break;
-			case 'k': //Init the legs
-				logger(now) << "Starting the initiator" << endl;
-				//leftForward.handler.startInitiator(now);
-				rightForward.handler.startInitiator(now);
-				break;
-			case 's': //Start the main cycle
+
+			case 'm': //Start the main cycle
 				logger(now) << "Starting main left loop" << endl;
 				leftForward.handler.startMainLoop(now);
 				rightForward.handler.startMainLoop(now);
@@ -101,6 +102,7 @@ void loop() {
 		unsigned long int segmentTime = now - lastPing;
 		logger(now) << "Done with " << loops << " loops in " << segmentTime << " ms for a rate of " << (int)floor(loops / (float)segmentTime) << " loops/ms" << endl;				
 		loops = 0;
+		lastPing = now;
 		nextPing += 5000;
 	}
 }

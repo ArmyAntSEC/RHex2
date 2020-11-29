@@ -17,8 +17,10 @@ class LegForwardRight : public LegProcessor {
             encoderPin2 = 11;
             breakerPin = 13;
             outputPin = A1;
-            legOffset = 400 + 3592/2 + 3592*0.4; //Added 0.4 of a rotation to test the pacing.
+            legOffset = 400 + 3592*0.4; //Added 0.4 of a rotation to test the pacing.
             
+            contactFactor = 1.2;
+
             driverPin1 = 8;
             driverPin2 = 7;  
             driverPWM = &pwmWrapper;          
