@@ -22,6 +22,7 @@ class LegProcessor
         int encoderPin2;
         int breakerPin;
         int outputPin;
+        int currentPin;
 
         int legOffset;
         float contactFactor;
@@ -55,7 +56,7 @@ class LegProcessor
         {
             encoder.init<N>( encoderPin1, encoderPin2, breakerPin, outputPin, legOffset );            
                     
-            driver.init( driverPin1, driverPin2, driverPWM );
+            driver.init( driverPin1, driverPin2, driverPWM, currentPin );
         
             stepRegulator.init( &driver, &encoder );
             initiator.init ( &handler, &driver, &encoder, &stepRegulator );

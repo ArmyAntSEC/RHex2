@@ -27,7 +27,7 @@ class MotorRegulator
 
         float getCurrentPosRev()
         {
-            float currentPositionClicks = encoder->read();
+            float currentPositionClicks = encoder->readCompensated();
             
             return currentPositionClicks/3591.84; //Convert clicks to rotations.            
         }

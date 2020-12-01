@@ -18,15 +18,21 @@ private:
 	int driverPinOne;
 	int driverPinTwo;	
 	pwm_base * driverPinPWM;
+	int currentPin;
 
 public:	
-	void init( int _driverPinOne, int _driverPinTwo, pwm_base * _driverPinPWM ) {
+	void init( int _driverPinOne, int _driverPinTwo, pwm_base * _driverPinPWM, 
+		int _currentPin ) 
+	{
 		this->driverPinOne = _driverPinOne;
 		this->driverPinTwo = _driverPinTwo;
 		this->driverPinPWM = _driverPinPWM;
 
+		this->currentPin = _currentPin;
+
 		pinMode(this->driverPinOne, OUTPUT);
-		pinMode(this->driverPinTwo, OUTPUT);		
+		pinMode(this->driverPinTwo, OUTPUT);	
+		pinMode(this->currentPin, INPUT );	
 
 		//Set the period to 5000e-8 seconds and the duty cycle to 0.
 		this->driverPinPWM->start(5120,0);		
@@ -44,6 +50,11 @@ public:
 		}
 
 		this->driverPinPWM->set_duty(abs(motorPWM)*20); //Convert from 0-255 to 0-5120;
+	}
+
+	float getCurrentInMilliVolt() {
+		float voltageValue = analogRead( this->currentPin ) * 3.3 / 1024;
+		return voltageValue / 140.0; //Convert to mV.
 	}
 };
 

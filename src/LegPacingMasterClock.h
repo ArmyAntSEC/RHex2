@@ -49,12 +49,12 @@ class LegPacingMasterClock: public RecurringTask, public Loggable
                 revolutions++;
             }
 
-            if ( revolutions > 3 ) { //Just take three steps at the time.
+            if ( revolutions > 1 ) { //Just take one step at the time.
                 this->stop();
             }
             
             angleRev = fmod( angleRev, 1 );
-            log(now) << " AngleRev: " << angleRev << endl;
+            //log(now) << " AngleRev: " << angleRev << endl;
         }
 
     private:

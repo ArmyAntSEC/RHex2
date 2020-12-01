@@ -32,15 +32,15 @@ class MotorPositionScheduler: public MotorStateHandlerImpl,
             float angleRev = computeActualLegAngleRev ( masterAngleRev, contactFactor );
             regulator->setWantedPositionRev( angleRev, now );	
             regulator->run(now);
-            log(now) << "Master Angle: " << masterAngleRev << 
-            ", Actual wanted angle: " << angleRev << endl;
+            //log(now) << "Master Angle: " << masterAngleRev << 
+            //", Actual wanted angle: " << angleRev << endl;
         }
         
     private:    
         LegPacingMasterClock * masterClock;
 
         float time_s = 0.5;                 
-        float phi_s = 0.25;
+        float phi_s = 0.5;
         float phi_o = 0;
 
         float contactFactor = 1;

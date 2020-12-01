@@ -19,7 +19,7 @@ class LegForwardRight : public LegProcessor {
             outputPin = A1;
             legOffset = 400 + 3592*0.4; //Added 0.4 of a rotation to test the pacing.
             
-            contactFactor = 1.2;
+            contactFactor = 1.0;
 
             driverPin1 = 8;
             driverPin2 = 7;  

@@ -25,7 +25,7 @@ class MotorPIDRegulator: public MotorRegulator, public Loggable, protected PID {
 		
 		virtual void run(unsigned long int now)
 		{
-			long int currentPositionClicks = this->encoder->read();
+			long int currentPositionClicks = this->encoder->readCompensated();
 			int posAtLastHome = this->encoder->getPosAtLastHome();
 
 			//And compute the current position in radians
@@ -38,15 +38,20 @@ class MotorPIDRegulator: public MotorRegulator, public Loggable, protected PID {
 			float PwmValue = Kp*error + Kd*deltaError;
 			lastError = error;
 
-			if (PwmValue > 255) PwmValue = 255;
-			if (PwmValue < -255) PwmValue = -255;
+			if (PwmValue > 250) PwmValue = 250;
+			if (PwmValue < -250) PwmValue = -250;
 
-			this->driver->setMotorPWM((int)PwmValue);			
+			this->driver->setMotorPWM((int)PwmValue);	
 
-			log(now) << "Step: " << currentPositionClicks << 
-				", CurrPos: " << currentPositionRev << ", SetPt: " << this->setPointRev << 
-				", Error: " << error << ", PWM: " << PwmValue <<
-				", Pos At last home: " << posAtLastHome << endl;	
+			float currentInMilliVolt = this->driver->getCurrentInMilliVolt();
+
+			if ( fabs(PwmValue) > 150 ) {
+				log(now) << "Step: " << currentPositionClicks << 
+					", CurrPos: " << currentPositionRev << ", SetPt: " << this->setPointRev << 
+					", Error: " << error << ", PWM: " << PwmValue <<
+					", Current (mV): " << currentInMilliVolt <<
+					", Pos At last home: " << posAtLastHome << endl;	
+			}
 		}
 
 		virtual void setMaxSpeed( unsigned int maxSpeed )

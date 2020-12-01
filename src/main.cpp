@@ -9,7 +9,7 @@
 #include "LegPacingMasterClock.h"
 
 #define SAMPLE_TIME 100
-#define LEG_ROTATIONS_PER_MINUTE 30
+#define LEG_ROTATIONS_PER_MINUTE 15
 
 class L : public Loggable
 {
@@ -35,7 +35,7 @@ void setup() {
 
 	//Initilaize the communication.
 	Serial.begin(115200);
-	Serial.setTimeout(0);
+	Serial.setTimeout(100);
 	logger(now) << "\n\n\n\n" << "Hello World again!" << endl;
 
 	leftForward.init();		
@@ -62,7 +62,10 @@ void loop() {
 	//Check if we have incoming serial data
 	if ( Serial.available() > 0 ) {
 		char input;
-		Serial.readBytes( &input, 1 );
+		int n = Serial.readBytes( &input, 1 );		
+		Serial.print( input );
+		Serial.print( ": " );
+		Serial.println ( n );		
 		switch ( input ) {
 			case 'i': //Init the legs
 				logger(now) << "Starting the initiator" << endl;
@@ -79,7 +82,6 @@ void loop() {
 				leftForward.handler.startInitiator(now);
 				rightForward.handler.startInitiator(now);				
 				break;
-
 			case 'm': //Start the main cycle
 				logger(now) << "Starting main left loop" << endl;
 				leftForward.handler.startMainLoop(now);
@@ -100,7 +102,7 @@ void loop() {
 	loops++;
 	if ( now > nextPing ) {
 		unsigned long int segmentTime = now - lastPing;
-		logger(now) << "Done with " << loops << " loops in " << segmentTime << " ms for a rate of " << (int)floor(loops / (float)segmentTime) << " loops/ms" << endl;				
+		//logger(now) << "Done with " << loops << " loops in " << segmentTime << " ms for a rate of " << (int)floor(loops / (float)segmentTime) << " loops/ms" << endl;				
 		loops = 0;
 		lastPing = now;
 		nextPing += 5000;
