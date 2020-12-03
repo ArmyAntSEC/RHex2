@@ -45,13 +45,13 @@ class MotorPIDRegulator: public MotorRegulator, public Loggable, protected PID {
 
 			float currentInMilliVolt = this->driver->getCurrentInMilliVolt();
 
-			if ( fabs(PwmValue) > 150 ) {
-				log(now) << "Step: " << currentPositionClicks << 
-					", CurrPos: " << currentPositionRev << ", SetPt: " << this->setPointRev << 
-					", Error: " << error << ", PWM: " << PwmValue <<
-					", Current (mV): " << currentInMilliVolt <<
-					", Pos At last home: " << posAtLastHome << endl;	
-			}
+			//if ( fabs(PwmValue) > 150 ) {
+				log(now) <<  
+					" " << currentPositionRev << " " << this->setPointRev << 
+					" " << error << " " << PwmValue <<
+					" " << currentInMilliVolt <<
+					" " << posAtLastHome << endl;	
+			//}
 		}
 
 		virtual void setMaxSpeed( unsigned int maxSpeed )

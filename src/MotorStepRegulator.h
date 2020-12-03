@@ -20,7 +20,8 @@ class MotorStepRegulator: public MotorRegulator, public Loggable {
 
 			//Now set the motor power
 			float angleDiffRev = this->angleDifferenceRev(this->setPointRev, currentPositionRev );
-
+			float error = this->MotorRegulator::angleDifferenceRev( this->setPointRev, currentPositionRev );
+			
 			int posAtLastHome = this->encoder->getPosAtLastHome();
 
 			float angleDiffRevAbs = fabs(angleDiffRev);
@@ -40,11 +41,13 @@ class MotorStepRegulator: public MotorRegulator, public Loggable {
 			
 			this->driver->setMotorPWM((int)PwmValue);
 
+			float currentInMilliVolt = this->driver->getCurrentInMilliVolt();
 
-			log(now) << "AngleDiffRev: " << angleDiffRev << 
-				", CurrPos: " << currentPositionRev << ", SetPt: " << this->setPointRev << 
-				", PWM: " << PwmValue << 
-				", Pos At last home: " << posAtLastHome << endl;	
+			log(now) << 
+				"CurrPos: " << currentPositionRev << ", SetPt: " << this->setPointRev << 
+				", Error: " << error << ", PWM: " << PwmValue <<
+				", C(V): " << currentInMilliVolt <<
+				", HomePos: " << posAtLastHome << endl;
 		}
 
 		virtual boolean hasSettled( unsigned long int now ) { return settled; }	

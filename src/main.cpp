@@ -84,8 +84,9 @@ void loop() {
 				break;
 			case 'm': //Start the main cycle
 				logger(now) << "Starting main left loop" << endl;
+				logger(now) << "Time Module CurrPos SetPt Error PWM C(V) HomePos" << endl;
 				leftForward.handler.startMainLoop(now);
-				rightForward.handler.startMainLoop(now);
+				//rightForward.handler.startMainLoop(now);
 				legMasterClock.init( now, LEG_ROTATIONS_PER_MINUTE );
 				break;
 			case 'f': //Flush out the logger. Can potentially break the interrupts.
@@ -101,7 +102,7 @@ void loop() {
 	//Post regular updates
 	loops++;
 	if ( now > nextPing ) {
-		unsigned long int segmentTime = now - lastPing;
+		//unsigned long int segmentTime = now - lastPing;
 		//logger(now) << "Done with " << loops << " loops in " << segmentTime << " ms for a rate of " << (int)floor(loops / (float)segmentTime) << " loops/ms" << endl;				
 		loops = 0;
 		lastPing = now;

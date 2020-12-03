@@ -53,8 +53,8 @@ public:
 	}
 
 	float getCurrentInMilliVolt() {
-		float voltageValue = analogRead( this->currentPin ) * 3.3 / 1024;
-		return voltageValue / 140.0; //Convert to mV.
+		float voltageValue = analogRead( this->currentPin ) * 3.3 / 1024; //Read signal in Volts
+		return voltageValue / 0.14; //Convert to A.
 	}
 };
 
