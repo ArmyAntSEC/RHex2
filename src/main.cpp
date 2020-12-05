@@ -55,9 +55,32 @@ void moveLegsToPosWithHome(MyCommandParser::Argument *args, char *response)
 	leftForward.handler.startInitiator(now);
 	rightForward.handler.startInitiator(now);	
 
-	strlcpy(response, "success", MyCommandParser::MAX_RESPONSE_SIZE);				
+	strlcpy(response, "CmdParse: Move to position intiated", MyCommandParser::MAX_RESPONSE_SIZE);				
 }
 
+void flushLog(MyCommandParser::Argument *args, char *response)
+{
+	logger(now) << "Dumping log" << endl;
+	Log.sendToSerial();
+	strlcpy(response, "CmdParse: Flush complete.", MyCommandParser::MAX_RESPONSE_SIZE);
+}
+
+void takeStep(MyCommandParser::Argument *args, char *response)
+{
+	logger(now) << "Starting main left loop" << endl;
+	logger(now) << "Time Module CurrPos SetPt Error PWM C(V) HomePos" << endl;
+	leftForward.handler.startMainLoop(now);
+	//rightForward.handler.startMainLoop(now);
+	legMasterClock.init( now, LEG_ROTATIONS_PER_MINUTE );
+	
+	strlcpy(response, "CmdParse: Step initiated.", MyCommandParser::MAX_RESPONSE_SIZE);
+}
+
+void restart(MyCommandParser::Argument *args, char *response)
+{
+	rstc_start_software_reset(RSTC);
+	strlcpy(response, "CmdParse: Restart.", MyCommandParser::MAX_RESPONSE_SIZE);
+}
 
 void setup() {
   	logger.setID("Main", "0");
@@ -80,7 +103,11 @@ void setup() {
 	sched.add( &legMasterClock );
 	
 	parser.registerCommand("init", "d", &moveLegsToPosWithHome );
+	parser.registerCommand("flush", "", &flushLog );
+	parser.registerCommand("step", "", &takeStep );
+	parser.registerCommand("restart", "", &restart );
 
+	
 	logger(now) << "Setup complete" << endl;
 	Log.sendToSerial();	
 }
@@ -93,6 +120,7 @@ void loop() {
 	if ( Serial.available() > 0 ) {		
 		char input;		
 		int n = Serial.readBytes( &input, 1 );
+		Serial.print ( input );
 		//Serial.print ( input );
 		//Serial.print ( input, DEC );
 
@@ -100,10 +128,13 @@ void loop() {
 			if ( lineWritePos >= lineLength - 1 ) {
 				Serial.println ( "Command input overflow. Discarding." );
 				lineWritePos = 0;
-			} else if ( input != '\n' ) {				
+			} else if ( input == '\b' && lineWritePos >= 1 ) {
+				//A backspace character
+				lineWritePos--;				
+			} else if ( input != '\n' && input != '\r' ) {				
 				line[lineWritePos] = input;
 				lineWritePos++;
-			} else {
+			} else if ( lineWritePos != 0 && (input == '\n' || input == '\r') ) {
 				line[lineWritePos] = 0;
 				lineWritePos = 0;
 
@@ -115,7 +146,10 @@ void loop() {
     			
 				Serial.print ( "Response: " );
 				Serial.println(response);
-
+			} else {
+				if ( lineWritePos > 0 ) {
+					Serial.print ( "This cannot happen" );
+				}
 			}
 		}
 	}
